@@ -8,13 +8,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Panel
+  - fondo
   - Water
   - UI
   - "Ara\xF1a"
   - Personaje
   - Suelo
-  - 
+  - Vaya
   - 
   - 
   - 
@@ -40,4 +40,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Basura1
+    uniqueID: 626853935
+    locked: 0
+  - name: Basura2
+    uniqueID: 3313264849
     locked: 0

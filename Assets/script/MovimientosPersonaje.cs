@@ -21,8 +21,30 @@ public class MovimientosPersonaje : MonoBehaviour
             animacion.SetTrigger("saltar");                                                                             //--------Establecemos la acción de saltar si presionamos la tecla Jump (barra espaciadora).
         
     }
+                                                                                                                        /// <summary>
+                                                                                                                        /// Función que va a comprobar la dirección en la que andamos jugando con la rotación.
+                                                                                                                        /// </summary>
+                                                                                                                        /// <param name="movimientox"></param>
+    public void Mirada(float movimientox)
+    {
+        if(movX < 0)                                                                                                    //--------Condición para cuando pulse hacia la izquierda que el muñeco mire a esa dirección.
+        {
+            transform.localScale = new Vector3(-1,1,1);
+        }
 
-    
+        if(movX > 0) {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        
+    }
+                                                                                                                        /// <summary>
+                                                                                                                        /// Función que fijará la cámara al personaje.
+                                                                                                                        /// </summary>
+    public void FijarCamara()
+    {
+        Camera.main.transform.position = transform.position + new Vector3(0, 0, -20);                                   //--------Referenciamos la cámara
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -37,8 +59,9 @@ public class MovimientosPersonaje : MonoBehaviour
 
         rigidbody2.velocity      = new Vector2(velx * movX, rigidbody2.velocity.y);                                     //--------Referenciamos el componente Rigidbody2d con un vector que contiene una velocidad por un movimiento en el eje x y una coordenadas en el eje y.
         movX                     = Input.GetAxis("Horizontal");                                                         //--------Extraemos el axis horizontal para el movimiento en el eje x con -1 o 1. 
-        animacion.SetFloat("MoveX", Mathf.Abs(movX));                                                                   //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
         isSuelo                  = Physics2D.OverlapCircle(refPie.position, 1f, 1 << 8);                                //--------En esta sentencia de código, guardamos un bool comparando que si hay algo en el área formada por el radio de refPie, que sea true o false.
+        animacion.SetFloat("MoveX", Mathf.Abs(movX));                                                                   //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
+        
         animacion.SetBool("isPiso", isSuelo);                                                                           //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
 
         if (Input.GetButtonDown("Jump") && isSuelo)                                                                     //--------Si está en el sueloy pulso saltar:
@@ -46,6 +69,8 @@ public class MovimientosPersonaje : MonoBehaviour
             Saltar();                                                                                                   //--------Establecemos la acción de saltar si presionamos la tecla Jump (barra espaciadora).
         }
 
+        Mirada(movX);
+        FijarCamara();
     }
 
    
