@@ -15,9 +15,11 @@ public class MovimientosPersonaje : MonoBehaviour
     public Transform       refPie;
     public Transform       ContenedorArma;
     public Transform       mirilla;
-    
+    public Transform       ReferenciaManoArmada;
+    public Transform       Refcabeza;
+    public Transform       refOjos;
     public bool            isSuelo;                                                                                          //--------Objeto que se va a referenciar al transform del arma.
-    bool                   isArmado;                                                                                                      //Variable para ver si ha cogido o no el arma.
+    bool                   isArmado;                                                                                         //Variable para ver si ha cogido o no el arma.
     
 
                                                                                                                              /// <summary>
@@ -30,7 +32,7 @@ public class MovimientosPersonaje : MonoBehaviour
         
     }
                                                                                                                               /// <summary>
-                                                                                                                              /// Función que va a comprobar la dirección en la que andamos jugando con la rotación.
+                                                                                                                            /// Función que va a comprobar la dirección en la que andamos jugando con la rotación.
                                                                                                                               /// </summary>
                                                                                                                               /// <param name="movimientox"></param>
     public void Mirada(float movimientox)
@@ -64,6 +66,7 @@ public class MovimientosPersonaje : MonoBehaviour
             isArmado                    = true;
             Destroy(collision.gameObject);
             ContenedorArma.gameObject.SetActive(true);
+            isArmado = true;
         }
     }
 
@@ -80,11 +83,43 @@ public class MovimientosPersonaje : MonoBehaviour
         return Mirilla.position;
     }
 
+                                                                                                                               /// <summary>
+                                                                                                                               /// Función que va a ejecutarse en cuanto coja el arma el personaje.
+                                                                                                                               /// </summary>
+                                                                                                                               /// <param name="mirilla">Parámetro que es objeto de tipo transform</param>
+    public void ComprobarVistaArmado(Transform mirilla)
+    {
+        if (mirilla.transform.position.x < transform.position.x)
+        {
+            transform.localScale          = new Vector3(-1, 1, 1);
+        }
+
+        if (mirilla.transform.position.x > transform.position.x)
+        {
+            transform.localScale          = new Vector3(1, 1, 1);
+        }
+    }
+
+    /// <summary>
+    /// Método que va a evitar que se sobreescriba el movimiento d ela cabeza.
+    /// </summary>
+
+
+    private void LateUpdate()
+    {
+        if (isArmado)
+        {
+            Refcabeza.up = refOjos.position - mirilla.position;
+            //ContenedorArma.up = ContenedorArma.position - mirilla.position;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        animacion                         = GetComponent<Animator>();                                                             //--------Agregamos una referencia al animator
-        rigidbody2                        = GetComponent<Rigidbody2D>();                                                          //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
+        animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
+        rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
+        mirilla.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -104,9 +139,18 @@ public class MovimientosPersonaje : MonoBehaviour
 
         Mirada(movX);
         FijarCamara();
-        mirilla.position                  = PosicionMouse(mirilla);
 
+        if (isArmado)
+        {
+            mirilla.position = PosicionMouse(mirilla);
+            mirilla.gameObject.SetActive(true);
+            ComprobarVistaArmado(mirilla);
+            //ReferenciaManoArmada.position   = PosicionMouse(mirilla); 
+            Refcabeza.up = refOjos.position - mirilla.position;
+            LateUpdate();
+        }
 
+       
     }
 
    
