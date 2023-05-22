@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MovimientosPersonaje : MonoBehaviour
@@ -10,21 +12,26 @@ public class MovimientosPersonaje : MonoBehaviour
     
     public float           fuerzaSalto;
     public float           velx;
-    float                  movX;
-    
+    public float           movX;
+    public float           retroceso      = 300f;
+    public float           impactoAZombie = 300f;
+
     public Transform       refPie;
     public Transform       ContenedorArma;
     public Transform       mirilla;
     public Transform       ReferenciaManoArmada;
     public Transform       Refcabeza;
     public Transform       refOjos;
-    public bool            isSuelo;                                                                                          //--------Objeto que se va a referenciar al transform del arma.
-    bool                   isArmado;                                                                                         //Variable para ver si ha cogido o no el arma.
-    
+    public Transform       refCanionPistola;
 
-                                                                                                                             /// <summary>
-                                                                                                                             /// Función que va a ejecutar el salto.
-                                                                                                                             /// </summary>
+    RaycastHit2D           impacto;
+    public GameObject      particulasDisparo;
+    public bool            isSuelo;                                                                                           //--------Objeto que se va a referenciar al transform del arma.
+    bool                   isArmado;                                                                                          //Variable para ver si ha cogido o no el arma.
+
+                                                                                                                              /// <summary>
+                                                                                                                              /// Función que va a ejecutar el salto.
+                                                                                                                              /// </summary>
     public void Saltar()
     { 
             rigidbody2.AddForce(new Vector2(0, fuerzaSalto), ForceMode2D.Impulse);                                            //--------Si pulsamos saltar le añadimos una fuerza con un vector2 y así poder pasarle la fuerza en ambos ejes, y le pasamos el tipo de fuerza que en este caso es impulso.
@@ -32,7 +39,7 @@ public class MovimientosPersonaje : MonoBehaviour
         
     }
                                                                                                                               /// <summary>
-                                                                                                                            /// Función que va a comprobar la dirección en la que andamos jugando con la rotación.
+                                                                                                                              /// Función que va a comprobar la dirección en la que andamos jugando con la rotación.
                                                                                                                               /// </summary>
                                                                                                                               /// <param name="movimientox"></param>
     public void Mirada(float movimientox)
@@ -63,10 +70,10 @@ public class MovimientosPersonaje : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("PistolaCalle"))
         {
-            isArmado                    = true;
+            isArmado                     = true;
             Destroy(collision.gameObject);
             ContenedorArma.gameObject.SetActive(true);
-            isArmado = true;
+            isArmado                     = true;
         }
     }
 
@@ -83,10 +90,10 @@ public class MovimientosPersonaje : MonoBehaviour
         return Mirilla.position;
     }
 
-                                                                                                                               /// <summary>
-                                                                                                                               /// Función que va a ejecutarse en cuanto coja el arma el personaje.
-                                                                                                                               /// </summary>
-                                                                                                                               /// <param name="mirilla">Parámetro que es objeto de tipo transform</param>
+                                                                                                                                 /// <summary>
+                                                                                                                                 /// Función que va a ejecutarse en cuanto coja el arma el personaje.
+                                                                                                                                 /// </summary>
+                                                                                                                                 /// <param name="mirilla">Parámetro que es objeto de tipo transform</param>
     public void ComprobarVistaArmado(Transform mirilla)
     {
         if (mirilla.transform.position.x < transform.position.x)
@@ -100,19 +107,49 @@ public class MovimientosPersonaje : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Método que va a evitar que se sobreescriba el movimiento d ela cabeza.
-    /// </summary>
-
+                                                                                                                                 /// <summary>
+                                                                                                                                 /// Método que va a evitar que se sobreescriba el movimiento de la cabeza, ya que lo último que ejecuta Unity en la pila es la animación y renderizado de las animaciones generadas por nosotros.
+                                                                                                                                 /// </summary>
 
     private void LateUpdate()
     {
         if (isArmado)
         {
-            Refcabeza.up = refOjos.position - mirilla.position;
+            Refcabeza.up                   = refOjos.position - mirilla.position;
             //ContenedorArma.up = ContenedorArma.position - mirilla.position;
         }
     }
+
+
+
+    public void Disparar()
+    {
+        Vector3 direccion = (mirilla.position - ContenedorArma.position).normalized;
+        impacto                             =  Physics2D.Raycast(ContenedorArma.position, direccion, 1000f, ~(1 << 10));         //--------Método al que se le pasa un origen, una posición y con normalized convertimos ese vector en una magnitud. Este método ofrecido por Unity simula la bañla del arma.
+
+        if (impacto.collider != null)
+        {
+            if (impacto.collider.gameObject.CompareTag("Zombie"))
+            {
+                ImpactoZombie(direccion);
+            }
+        }
+
+        Instantiate (particulasDisparo, refCanionPistola.position, Quaternion.identity);
+
+    }
+
+                                                                                                                                 /// <summary>
+                                                                                                                                 /// Función que ejecutará la simulación del impacto de la bala al zombie.
+                                                                                                                                 /// </summary>
+                                                                                                                                 /// <param name="direccion"></param>
+    public void ImpactoZombie(Vector3 direccion)
+    {
+        impacto.rigidbody.AddForce(impactoAZombie * direccion, ForceMode2D.Impulse);
+    }
+
+
+    //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // Start is called before the first frame update
     void Start()
@@ -145,9 +182,14 @@ public class MovimientosPersonaje : MonoBehaviour
             mirilla.position = PosicionMouse(mirilla);
             mirilla.gameObject.SetActive(true);
             ComprobarVistaArmado(mirilla);
-            //ReferenciaManoArmada.position   = PosicionMouse(mirilla); 
-            Refcabeza.up = refOjos.position - mirilla.position;
+            ReferenciaManoArmada.position   = PosicionMouse(mirilla); 
+            Refcabeza.up                    = refOjos.position - mirilla.position;
             LateUpdate();
+           
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Disparar();
+            }
         }
 
        
