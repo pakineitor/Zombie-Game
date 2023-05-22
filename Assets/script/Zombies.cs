@@ -13,12 +13,22 @@ public class Zombies : MonoBehaviour
     public float    umbralVelocidad;
     Vector3 escalaDefault;
 
+
+
+    public void ZombieMuere()
+    {
+        Destroy(gameObject); 
+    }
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         rb2d                        = GetComponent<Rigidbody2D>();                                                 //---------En este caso lo que hacemos es inicializar el objeto.
         limiteCaminarDerecho        = transform.position.x + GetComponent<CircleCollider2D>().radius;              //---------En esta sentencia lo que estamos diciéndole a unity es, oye, el límite derecho es la posición del zombie + la longitud del radio.
         limiteCaminarIzquierdo      = transform.position.x - GetComponent<CircleCollider2D>().radius;
+        Destroy(GetComponent<CircleCollider2D>());
         escalaDefault               = transform.localScale;
     }
 

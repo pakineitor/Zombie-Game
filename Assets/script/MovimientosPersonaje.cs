@@ -13,8 +13,8 @@ public class MovimientosPersonaje : MonoBehaviour
     public float           fuerzaSalto;
     public float           velx;
     public float           movX;
-    public float           retroceso      = 300f;
-    public float           impactoAZombie = 300f;
+    public float           retroceso      = 400f;
+    public float           impactoAZombie = 900f;
 
     public Transform       refPie;
     public Transform       ContenedorArma;
@@ -26,6 +26,7 @@ public class MovimientosPersonaje : MonoBehaviour
 
     RaycastHit2D           impacto;
     public GameObject      particulasDisparo;
+    public GameObject      particulasSangre;
     public bool            isSuelo;                                                                                           //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                                                          //Variable para ver si ha cogido o no el arma.
 
@@ -121,21 +122,29 @@ public class MovimientosPersonaje : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// Método encargado de efectuar el disparo y los efectos que conlleva la ejecución.
+    /// </summary>
     public void Disparar()
     {
         Vector3 direccion = (mirilla.position - ContenedorArma.position).normalized;
-        impacto                             =  Physics2D.Raycast(ContenedorArma.position, direccion, 1000f, ~(1 << 10));         //--------Método al que se le pasa un origen, una posición y con normalized convertimos ese vector en una magnitud. Este método ofrecido por Unity simula la bañla del arma.
+        rigidbody2.AddForce(retroceso * -direccion, ForceMode2D.Impulse);
+        impacto                             =  Physics2D.Raycast(ContenedorArma.position, direccion, 1000f, ~(1 << 10));         //--------Método al que se le pasa un origen, una posición y con normalized convertimos ese vector en una magnitud. Este método ofrecido por Unity simula la bañla del arma
+        Instantiate(particulasDisparo, refCanionPistola.position, Quaternion.identity);
 
         if (impacto.collider != null)
         {
             if (impacto.collider.gameObject.CompareTag("Zombie"))
             {
                 ImpactoZombie(direccion);
+
+            }
+
+            if (impacto.collider.gameObject.CompareTag("Cabeza"))
+            {
+                impacto.transform.GetComponent<Zombies>().ZombieMuere();
             }
         }
-
-        Instantiate (particulasDisparo, refCanionPistola.position, Quaternion.identity);
 
     }
 
@@ -146,6 +155,7 @@ public class MovimientosPersonaje : MonoBehaviour
     public void ImpactoZombie(Vector3 direccion)
     {
         impacto.rigidbody.AddForce(impactoAZombie * direccion, ForceMode2D.Impulse);
+        Instantiate(particulasSangre, impacto.point, Quaternion.identity);
     }
 
 
