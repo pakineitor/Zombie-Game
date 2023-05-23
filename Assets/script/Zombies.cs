@@ -95,6 +95,18 @@ public class Zombies : MonoBehaviour
         transform.localScale = new Vector3(escalaDefault.x * direccion, escalaDefault.y, escalaDefault.z);
     }
 
+    /// <summary>
+    /// Método que comprobará si el zombie colisiona con algún objeto que le indicaremos con el nombre de las etiquetas desde el editor.
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player") && EstadoZombie == tipoComportamientoZombie.ataque)
+        {
+            Destroy(collision.gameObject);
+        }
+    }
+
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // Start is called before the first frame update
