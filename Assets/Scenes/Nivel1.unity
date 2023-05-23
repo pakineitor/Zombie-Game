@@ -1973,6 +1973,7 @@ MonoBehaviour:
   refCanionPistola: {fileID: 1038118580}
   particulasDisparo: {fileID: 3990925273732544074, guid: bd4e1c2149f6a704c863f21e8606b710, type: 3}
   particulasSangre: {fileID: 3990925273732544074, guid: 38c2a77f8a6be5241af51b7b8077f9cc, type: 3}
+  particulasSangrePakineitor: {fileID: 3990925273732544074, guid: 8302beb01fc1d4a4b82d5e67bc445b74, type: 3}
   isSuelo: 0
 --- !u!95 &444999793
 Animator:

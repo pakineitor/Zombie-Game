@@ -23,7 +23,7 @@ public class Zombies : MonoBehaviour
     enum                tipoComportamientoZombie { pasivo, persecucion, ataque}
     tipoComportamientoZombie EstadoZombie                                   = tipoComportamientoZombie.pasivo;
 
-    
+    bool                isMordida                                           = false;
 
     public void ZombieMuere()
     {
@@ -88,7 +88,11 @@ public class Zombies : MonoBehaviour
                 anim.speed                                                  = 1f;
 
                 //Vuelve a la zona de persecución:
-                if (distanciaConPakineitor > distanciaAtaque) EstadoZombie  = tipoComportamientoZombie.persecucion;
+                if (distanciaConPakineitor > distanciaAtaque)
+                {
+                    EstadoZombie = tipoComportamientoZombie.persecucion;
+                    anim.ResetTrigger("Atacar");
+                }
                 
                 break;
         }
@@ -101,11 +105,20 @@ public class Zombies : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && EstadoZombie == tipoComportamientoZombie.ataque)
+        if (collision.gameObject.CompareTag("Player") && isMordida)
         {
-            Destroy(collision.gameObject);
+
+            pakineitor.GetComponent<MovimientosPersonaje>().RecibirDaño(collision.contacts[0].point);
         }
     }
+
+    public void MordidaValidaInicio() { 
+        isMordida = true; 
+    }
+    public void MordidaValidaFin() { 
+        isMordida = false; 
+    }
+
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

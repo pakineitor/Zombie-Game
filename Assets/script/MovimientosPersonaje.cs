@@ -15,7 +15,7 @@ public class MovimientosPersonaje : MonoBehaviour
     public float           movX;
     public float           retroceso      = 400f;
     public float           impactoAZombie = 900f;
-
+    
     public Transform       refPie;
     public Transform       ContenedorArma;
     public Transform       mirilla;
@@ -27,8 +27,13 @@ public class MovimientosPersonaje : MonoBehaviour
     RaycastHit2D           impacto;
     public GameObject      particulasDisparo;
     public GameObject      particulasSangre;
+    public GameObject      particulasSangrePakineitor;
     public bool            isSuelo;                                                                                           //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                                                          //--------Variable para ver si ha cogido o no el arma.
+
+    int energiaMaxima = 10;
+    int energiaActual;
+
 
     /// <summary>
     /// Función que va a ejecutar el salto.
@@ -152,18 +157,35 @@ public class MovimientosPersonaje : MonoBehaviour
                                                                                                                                  /// <summary>
                                                                                                                                  /// Función que ejecutará la simulación del impacto de la bala al zombie.
                                                                                                                                  /// </summary>
-                                                                                                                                 /// <param name="direccion"></param>
+                                                                                                                                /// <param name="direccion"></param>
     public void ImpactoZombie(Vector3 direccion)
     {
         Instantiate(particulasSangre, impacto.point, Quaternion.identity);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="posicion"></param>
+    public void RecibirDaño(Vector2 posicion)
+    {
+        energiaActual = energiaMaxima--;
+        Instantiate (particulasSangrePakineitor, posicion, Quaternion.identity);
+        Debug.Log("Energía actual: " + energiaActual);
+
+        if(energiaActual <= 0) { Debug.Log("LA MURISIÓN EN CAMINOOOO"); }
+    }
+
+   
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 
     // Start is called before the first frame update
     void Start()
     {
+        energiaActual                     = energiaMaxima;
         animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
         mirilla.gameObject.SetActive(false);

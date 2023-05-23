@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3990925273732544072}
   - component: {fileID: 3990925273732544075}
   m_Layer: 0
-  m_Name: Sangre
+  m_Name: Sangre Pakineitor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,8 +222,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 0.3018868, g: 0, b: 0, a: 1}
-      maxColor: {r: 0.2830189, g: 0.028719489, b: 0, a: 1}
+      minColor: {r: 0.8584906, g: 0, b: 0, a: 1}
+      maxColor: {r: 1, g: 0.35698372, b: 0.28773582, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
