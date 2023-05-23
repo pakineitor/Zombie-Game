@@ -28,11 +28,11 @@ public class MovimientosPersonaje : MonoBehaviour
     public GameObject      particulasDisparo;
     public GameObject      particulasSangre;
     public bool            isSuelo;                                                                                           //--------Objeto que se va a referenciar al transform del arma.
-    bool                   isArmado;                                                                                          //Variable para ver si ha cogido o no el arma.
+    bool                   isArmado;                                                                                          //--------Variable para ver si ha cogido o no el arma.
 
-                                                                                                                              /// <summary>
-                                                                                                                              /// Función que va a ejecutar el salto.
-                                                                                                                              /// </summary>
+    /// <summary>
+    /// Función que va a ejecutar el salto.
+    /// </summary>
     public void Saltar()
     { 
             rigidbody2.AddForce(new Vector2(0, fuerzaSalto), ForceMode2D.Impulse);                                            //--------Si pulsamos saltar le añadimos una fuerza con un vector2 y así poder pasarle la fuerza en ambos ejes, y le pasamos el tipo de fuerza que en este caso es impulso.
@@ -143,6 +143,7 @@ public class MovimientosPersonaje : MonoBehaviour
             if (impacto.collider.gameObject.CompareTag("Cabeza"))
             {
                 impacto.transform.GetComponent<Zombies>().ZombieMuere();
+           
             }
         }
 
@@ -154,7 +155,6 @@ public class MovimientosPersonaje : MonoBehaviour
                                                                                                                                  /// <param name="direccion"></param>
     public void ImpactoZombie(Vector3 direccion)
     {
-        impacto.rigidbody.AddForce(impactoAZombie * direccion, ForceMode2D.Impulse);
         Instantiate(particulasSangre, impacto.point, Quaternion.identity);
     }
 
