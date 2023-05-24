@@ -31,7 +31,6 @@ public class MovimientosPersonaje : MonoBehaviour
 
     int                    energiaMaxima = 5;
     int                    energiaActual = 0;
-
     public Image mascaraDaño;
  
 
@@ -50,7 +49,7 @@ public class MovimientosPersonaje : MonoBehaviour
                                                                                                                               /// <param name="movimientox"></param>
     public void Mirada(float movimientox)
     {
-        if(movX < 0)                                                                                                          //--------Condición para cuando pulse hacia la izquierda que el muñeco mire a esa dirección.
+        if(movX < 0)                                                                                                           //--------Condición para cuando pulse hacia la izquierda que el muñeco mire a esa dirección.
         {
             transform.localScale        = new Vector3(-1,1,1);
         }
@@ -119,25 +118,24 @@ public class MovimientosPersonaje : MonoBehaviour
 
     private void LateUpdate()
     {
-        
+
         if (isArmado)
         {
             Refcabeza.up                   = refOjos.position - mirilla.position;
-            //ContenedorArma.up = ContenedorArma.position - mirilla.position;
         }
 
         
     }
 
 
-    /// <summary>
-    /// Método encargado de efectuar el disparo y los efectos que conlleva la ejecución.
-    /// </summary>
+                                                                                                                                   /// <summary>
+                                                                                                                                   /// Método encargado de efectuar el disparo y los efectos que conlleva la ejecución.
+                                                                                                                                   /// </summary>
     public void Disparar()
     {
-        Vector3 direccion = (mirilla.position - ContenedorArma.position).normalized;
+        Vector3 direccion                  = (mirilla.position - ContenedorArma.position).normalized;
         rigidbody2.AddForce(retroceso * -direccion, ForceMode2D.Impulse);
-        impacto                             =  Physics2D.Raycast(ContenedorArma.position, direccion, 1000f, ~(1 << 10));         //--------Método al que se le pasa un origen, una posición y con normalized convertimos ese vector en una magnitud. Este método ofrecido por Unity simula la bañla del arma
+        impacto                            =  Physics2D.Raycast(ContenedorArma.position, direccion, 1000f, ~(1 << 10));            //--------Método al que se le pasa un origen, una posición y con normalized convertimos ese vector en una magnitud. Este método ofrecido por Unity simula la bañla del arma
         Instantiate(particulasDisparo, refCanionPistola.position, Quaternion.identity);
 
         if (impacto.collider != null)
@@ -157,41 +155,53 @@ public class MovimientosPersonaje : MonoBehaviour
 
     }
 
-                                                                                                                                 /// <summary>
-                                                                                                                                 /// Función que ejecutará la simulación del impacto de la bala al zombie.
-                                                                                                                                 /// </summary>
-                                                                                                                                /// <param name="direccion"></param>
+                                                                                                                                   /// <summary>
+                                                                                                                                   /// Función que ejecutará la simulación del impacto de la bala al zombie.
+                                                                                                                                   /// </summary>
+                                                                                                                                   /// <param name="direccion"></param>
     public void ImpactoZombie(Vector3 direccion)
     {
         Instantiate(particulasSangre, impacto.point, Quaternion.identity);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="posicion"></param>
+                                                                                                                                    /// <summary>
+                                                                                                                                    /// 
+                                                                                                                                    /// </summary>
+                                                                                                                                    /// <param name="posicion"></param>
     public void RecibirDaño(Vector2 posicion)
     {
-        energiaActual = energiaMaxima--;
-
-        FixedUpdate();
+        energiaActual                      = energiaMaxima--;
+        float transparencia                =0f;
+        
+        
         if (energiaActual ==0) { 
             Destroy(gameObject); 
         }
         else {
             Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
+            
+            if(energiaActual == 3)
+            {
+                transparencia             = 74;
+            }
+
+            if(energiaActual == 2)
+            {
+                transparencia             = 134f;
+            }
+
+            if (energiaActual == 1)
+            {
+                transparencia             = 255f;
+            }
+           
+            
             Debug.Log("Energía actual: " + energiaActual);
+            mascaraDaño.color             = new Color(1, 1, 1, transparencia);
         }
     }
 
 
-
-    private void FixedUpdate()
-    {
-        
-        float valorAlfa   = 1 / (energiaMaxima * (energiaMaxima - energiaActual));
-        mascaraDaño.color = new Color(1, 1, 1, valorAlfa);
-    }
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -213,9 +223,8 @@ public class MovimientosPersonaje : MonoBehaviour
         rigidbody2.velocity               = new Vector2(velx * movX, rigidbody2.velocity.y);                                     //--------Referenciamos el componente Rigidbody2d con un vector que contiene una velocidad por un movimiento en el eje x y una coordenadas en el eje y.
         movX                              = Input.GetAxis("Horizontal");                                                         //--------Extraemos el axis horizontal para el movimiento en el eje x con -1 o 1. 
         isSuelo                           = Physics2D.OverlapCircle(refPie.position, 1f, 1 << 8);                                //--------En esta sentencia de código, guardamos un bool comparando que si hay algo en el área formada por el radio de refPie, que sea true o false.
-        animacion.SetFloat("MoveX", Mathf.Abs(movX));                                                                            //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
-        
-        animacion.SetBool("isPiso", isSuelo);                                                                                    //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
+        animacion.SetFloat( "MoveX"  ,  Mathf.Abs(movX));                                                                        //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
+        animacion.SetBool(  "isPiso" ,  isSuelo);                                                                                //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
 
         if (Input.GetButtonDown("Jump") && isSuelo)                                                                              //--------Si está en el sueloy pulso saltar:
         {
@@ -230,8 +239,8 @@ public class MovimientosPersonaje : MonoBehaviour
             mirilla.position = PosicionMouse(mirilla);
             mirilla.gameObject.SetActive(true);
             ComprobarVistaArmado(mirilla);
-            ReferenciaManoArmada.position   = PosicionMouse(mirilla); 
-            Refcabeza.up                    = refOjos.position - mirilla.position;
+            ReferenciaManoArmada.position  = PosicionMouse(mirilla); 
+            Refcabeza.up                   = refOjos.position - mirilla.position;
             LateUpdate();
            
             if (Input.GetButtonDown("Fire1"))
