@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MovimientosPersonaje : MonoBehaviour
 {
@@ -31,9 +29,11 @@ public class MovimientosPersonaje : MonoBehaviour
     public bool            isSuelo;                                                                                           //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                                                          //--------Variable para ver si ha cogido o no el arma.
 
-    int energiaMaxima = 10;
-    int energiaActual;
+    int                    energiaMaxima = 5;
+    int                    energiaActual = 0;
 
+    public Image mascaraDaño;
+ 
 
     /// <summary>
     /// Función que va a ejecutar el salto.
@@ -119,11 +119,14 @@ public class MovimientosPersonaje : MonoBehaviour
 
     private void LateUpdate()
     {
+        
         if (isArmado)
         {
             Refcabeza.up                   = refOjos.position - mirilla.position;
             //ContenedorArma.up = ContenedorArma.position - mirilla.position;
         }
+
+        
     }
 
 
@@ -170,13 +173,25 @@ public class MovimientosPersonaje : MonoBehaviour
     public void RecibirDaño(Vector2 posicion)
     {
         energiaActual = energiaMaxima--;
-        Instantiate (particulasSangrePakineitor, posicion, Quaternion.identity);
-        Debug.Log("Energía actual: " + energiaActual);
 
-        if(energiaActual <= 0) { Debug.Log("LA MURISIÓN EN CAMINOOOO"); }
+        FixedUpdate();
+        if (energiaActual ==0) { 
+            Destroy(gameObject); 
+        }
+        else {
+            Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
+            Debug.Log("Energía actual: " + energiaActual);
+        }
     }
 
-   
+
+
+    private void FixedUpdate()
+    {
+        
+        float valorAlfa   = 1 / (energiaMaxima * (energiaMaxima - energiaActual));
+        mascaraDaño.color = new Color(1, 1, 1, valorAlfa);
+    }
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -185,6 +200,7 @@ public class MovimientosPersonaje : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         energiaActual                     = energiaMaxima;
         animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
@@ -223,7 +239,7 @@ public class MovimientosPersonaje : MonoBehaviour
                 Disparar();
             }
         }
-
+        
        
     }
 
