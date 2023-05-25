@@ -295,7 +295,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -509.15, y: 245}
+  m_AnchoredPosition: {x: -410, y: 245}
   m_SizeDelta: {x: 228.1585, y: 25.0198}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &500092309
@@ -395,6 +395,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 500092307}
   m_CullTransparentMesh: 1
+--- !u!1 &546314329
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 546314331}
+  - component: {fileID: 546314330}
+  m_Layer: 0
+  m_Name: ScreenManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &546314330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 546314329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0b65542b39f47d42b6a4f328c4c9bcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &546314331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 546314329}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 539.4422, y: 341.92368, z: -6.860069}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &693354157
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,7 +676,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1090030771}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Screen, Assembly-CSharp
         m_MethodName: CargarPantalla
         m_Mode: 5
@@ -703,50 +747,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!1 &1090030770
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1090030772}
-  - component: {fileID: 1090030771}
-  m_Layer: 0
-  m_Name: MainScreen
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1090030771
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1090030770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6be9ea826179ba14c823576beefd1630, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1090030772
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1090030770}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 719.5333, y: 288.01123, z: 56.725727}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1098834740
 GameObject:
   m_ObjectHideFlags: 0
@@ -895,7 +895,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -152.052}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 548, y: 197}
+  m_AnchoredPosition: {x: 429, y: 161}
   m_SizeDelta: {x: 311.5733, y: 264.9125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1104254678
@@ -1036,7 +1036,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -201, y: 71.919}
+  m_AnchoredPosition: {x: -200, y: 22.213}
   m_SizeDelta: {x: 55.6326, y: 14.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1141489534
@@ -1358,8 +1358,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1090030771}
-        m_TargetAssemblyTypeName: Screen, Assembly-CSharp
+      - m_Target: {fileID: 546314330}
+        m_TargetAssemblyTypeName: screenManager, Assembly-CSharp
         m_MethodName: CargarPantalla
         m_Mode: 5
         m_Arguments:
@@ -1590,7 +1590,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668611831}
   m_LocalRotation: {x: 0.000026153764, y: 0.008131256, z: -0.0032163388, w: 0.9999618}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1599,8 +1599,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0.006, y: 0.932, z: -0.369}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 158, y: -195}
-  m_SizeDelta: {x: -253.3177, y: -357.3414}
+  m_AnchoredPosition: {x: 91.96185, y: -224.93002}
+  m_SizeDelta: {x: -139.3265, y: -369.2017}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1668611833
 MonoBehaviour:
@@ -1812,8 +1812,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -0.00024414062, y: 0}
+  m_AnchoredPosition: {x: -0.00024414062, y: 0}
+  m_SizeDelta: {x: -0.00048828, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1793185605
 MonoBehaviour:
@@ -1938,8 +1938,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1090030771}
-        m_TargetAssemblyTypeName: Screen, Assembly-CSharp
+      - m_Target: {fileID: 546314330}
+        m_TargetAssemblyTypeName: screenManager, Assembly-CSharp
         m_MethodName: Salir
         m_Mode: 1
         m_Arguments:
@@ -2094,7 +2094,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1090030771}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Screen, Assembly-CSharp
         m_MethodName: CargarPantalla
         m_Mode: 5
@@ -2193,7 +2193,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1967122197}
   m_LocalRotation: {x: 0.0005777578, y: -0.061553154, z: 0.009368113, w: 0.9980597}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2203,7 +2203,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0.132, y: -7.057, z: 1.067}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 604, y: 135}
+  m_AnchoredPosition: {x: 442, y: 114}
   m_SizeDelta: {x: 78.8665, y: 44.8096}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1967122199

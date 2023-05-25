@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Screen : MonoBehaviour
+public class screenManager : MonoBehaviour
 {
-
-
     /// <summary>
     /// Función para cargar la escena desde fuera.
     /// </summary>
@@ -23,6 +21,4 @@ public class Screen : MonoBehaviour
     {
         Application.Quit();
     }
-
-
 }
