@@ -1,6 +1,7 @@
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 public class MovimientosPersonaje : MonoBehaviour
 {
@@ -29,10 +30,13 @@ public class MovimientosPersonaje : MonoBehaviour
     public bool            isSuelo;                                                                                           //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                                                          //--------Variable para ver si ha cogido o no el arma.
 
-    int                    energiaMaxima = 5;
+    int                    energiaMaxima = 4;
     int                    energiaActual = 0;
-    public Image mascaraDaño;
- 
+    public UnityEngine.UI.Image mascaraDaño;
+    public TMPro.TextMeshProUGUI texto;
+    public UnityEngine.UI.Image BarraVerde;
+    
+
 
     /// <summary>
     /// Función que va a ejecutar el salto.
@@ -172,32 +176,39 @@ public class MovimientosPersonaje : MonoBehaviour
     {
         energiaActual                      = energiaMaxima--;
         float transparencia                =0f;
-        
-        
-        if (energiaActual ==0) { 
+
+        Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
+       
+        if (energiaActual ==0) {
+            BarraVerde.fillAmount = 0.0f;
             Destroy(gameObject); 
         }
         else {
-            Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
+            
             
             if(energiaActual == 3)
             {
                 transparencia             = 74;
+                BarraVerde.fillAmount = 0.856f;
             }
 
             if(energiaActual == 2)
             {
                 transparencia             = 134f;
+                BarraVerde.fillAmount = 0.355f;
             }
 
             if (energiaActual == 1)
             {
                 transparencia             = 255f;
+                BarraVerde.fillAmount = 0.036f;
             }
-           
-            
+
+            texto.text = energiaActual.ToString();
+
             Debug.Log("Energía actual: " + energiaActual);
             mascaraDaño.color             = new Color(1, 1, 1, transparencia);
+            
         }
     }
 
