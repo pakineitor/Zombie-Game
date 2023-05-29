@@ -35,8 +35,8 @@ public class MovimientosPersonaje : MonoBehaviour
     public UnityEngine.UI.Image mascaraDaño;
     public TMPro.TextMeshProUGUI texto;
     public UnityEngine.UI.Image BarraVerde;
-    
-
+    public UnityEngine.UI.Image telaNegra;
+    float ValorAlpha_Deseado_tela_negra = 0;
 
     /// <summary>
     /// Función que va a ejecutar el salto.
@@ -181,7 +181,8 @@ public class MovimientosPersonaje : MonoBehaviour
        
         if (energiaActual ==0) {
             BarraVerde.fillAmount = 0.0f;
-            Destroy(gameObject); 
+            animacion.SetTrigger("Muere");
+            FadeOut();
         }
         else {
             
@@ -204,6 +205,8 @@ public class MovimientosPersonaje : MonoBehaviour
                 BarraVerde.fillAmount = 0.036f;
             }
 
+           
+
             texto.text = energiaActual.ToString();
 
             Debug.Log("Energía actual: " + energiaActual);
@@ -212,8 +215,20 @@ public class MovimientosPersonaje : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        float ValorAlpha = Mathf.Lerp(telaNegra.color.a, ValorAlpha_Deseado_tela_negra, 0.1f);
+        if(energiaActual == 0)
+        {
+            telaNegra.color = new Color(0, 0, 0, ValorAlpha);
+        }
+    }
 
 
+   public void FadeOut()
+    {
+        ValorAlpha_Deseado_tela_negra=0;
+    }
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -235,7 +250,8 @@ public class MovimientosPersonaje : MonoBehaviour
         movX                              = Input.GetAxis("Horizontal");                                                         //--------Extraemos el axis horizontal para el movimiento en el eje x con -1 o 1. 
         isSuelo                           = Physics2D.OverlapCircle(refPie.position, 1f, 1 << 8);                                //--------En esta sentencia de código, guardamos un bool comparando que si hay algo en el área formada por el radio de refPie, que sea true o false.
         animacion.SetFloat( "MoveX"  ,  Mathf.Abs(movX));                                                                        //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
-        animacion.SetBool(  "isPiso" ,  isSuelo);                                                                                //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
+        animacion.SetBool(  "isPiso" ,  isSuelo); 
+        //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
 
         if (Input.GetButtonDown("Jump") && isSuelo)                                                                              //--------Si está en el sueloy pulso saltar:
         {
@@ -258,6 +274,8 @@ public class MovimientosPersonaje : MonoBehaviour
             {
                 Disparar();
             }
+
+            
         }
         
        
