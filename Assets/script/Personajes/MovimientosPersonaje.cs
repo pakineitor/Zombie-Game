@@ -1,6 +1,8 @@
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public class MovimientosPersonaje : MonoBehaviour
@@ -36,8 +38,8 @@ public class MovimientosPersonaje : MonoBehaviour
     public TMPro.TextMeshProUGUI texto;
     public UnityEngine.UI.Image BarraVerde;
     public UnityEngine.UI.Image telaNegra;
-    float ValorAlpha_Deseado_tela_negra = 0;
-
+    float ValorDeseadoPantallaNegra = 1f;
+    bool isMuerto = false;
     /// <summary>
     /// Función que va a ejecutar el salto.
     /// </summary>
@@ -180,9 +182,10 @@ public class MovimientosPersonaje : MonoBehaviour
         Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
        
         if (energiaActual ==0) {
-            BarraVerde.fillAmount = 0.0f;
+            BarraVerde.fillAmount          = 0.0f;
             animacion.SetTrigger("Muere");
-            FadeOut();
+            isMuerto = true;
+      
         }
         else {
             
@@ -190,19 +193,19 @@ public class MovimientosPersonaje : MonoBehaviour
             if(energiaActual == 3)
             {
                 transparencia             = 74;
-                BarraVerde.fillAmount = 0.856f;
+                BarraVerde.fillAmount     = 0.856f;
             }
 
             if(energiaActual == 2)
             {
                 transparencia             = 134f;
-                BarraVerde.fillAmount = 0.355f;
+                BarraVerde.fillAmount     = 0.355f;
             }
 
             if (energiaActual == 1)
             {
                 transparencia             = 255f;
-                BarraVerde.fillAmount = 0.036f;
+                BarraVerde.fillAmount     = 0.036f;
             }
 
            
@@ -215,20 +218,37 @@ public class MovimientosPersonaje : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Método que pone la transparencia de la pantalla negra opaca.
+    /// </summary>
+  public void FadeOut()
+    {
+        ValorDeseadoPantallaNegra        = 1;
+    }
+
+    /// <summary>
+    /// Método que pone la pantalla negra transparente.
+    /// </summary>
+    public void FadeIn()
+    {
+        ValorDeseadoPantallaNegra        = 0;
+    }
+
+
     private void FixedUpdate()
     {
-        float ValorAlpha = Mathf.Lerp(telaNegra.color.a, ValorAlpha_Deseado_tela_negra, 0.1f);
+        float ValorAlpha                 = Mathf.Lerp(telaNegra.color.a, ValorDeseadoPantallaNegra, 0.1f);
         if(energiaActual == 0)
         {
-            telaNegra.color = new Color(0, 0, 0, ValorAlpha);
+            telaNegra.color              = new Color(0, 0, 0, ValorAlpha);
+            if (ValorAlpha > 0.9f && ValorDeseadoPantallaNegra == 1) SceneManager.LoadScene("Nivel1");
         }
+
+        
     }
 
 
-   public void FadeOut()
-    {
-        ValorAlpha_Deseado_tela_negra=0;
-    }
+  
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -241,6 +261,9 @@ public class MovimientosPersonaje : MonoBehaviour
         animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
         mirilla.gameObject.SetActive(false);
+        if(isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
+        
+
     }
 
     // Update is called once per frame
@@ -277,8 +300,8 @@ public class MovimientosPersonaje : MonoBehaviour
 
             
         }
-        
-       
+
+        isMuerto = false;
     }
 
    
