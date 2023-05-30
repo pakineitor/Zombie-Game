@@ -1,15 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class screenManager : MonoBehaviour
 {
+
+    public GameObject MenuPrincipal;
+    public GameObject PantallaAjustes;
+    public Button SonidoOn;
+    public Button SonidoOff;
+
+
+
     /// <summary>
     /// Función para cargar la escena desde fuera.
     /// </summary>
     /// <param name="NombreEscena"></param>
-    public void CargarPantalla(string NombreEscena)
+    public void CargarNivel1(string NombreEscena)
     {
         SceneManager.LoadScene(NombreEscena);         //Método para cargar una escena.
     }
@@ -21,4 +31,31 @@ public class screenManager : MonoBehaviour
     {
         Application.Quit();
     }
+
+
+    public void CargarPantallaAjustes()
+    {
+        PantallaAjustes.SetActive(true);
+   
+    }
+
+    public void VolverAlMenu()
+    {
+        PantallaAjustes.SetActive(false);
+
+    }
+
+    public void ActivarSonido()
+    {
+        SonidoOff.gameObject.SetActive(true);
+        SonidoOn.gameObject.SetActive(false);
+    }
+
+    public void DesactivarSonido()
+    {
+        SonidoOff.gameObject.SetActive(false);
+        SonidoOn.gameObject.SetActive(true);
+    }
+
+    
 }
