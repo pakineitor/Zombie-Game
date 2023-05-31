@@ -8,10 +8,10 @@ using UnityEngine.UI;
 public class screenManager : MonoBehaviour
 {
 
-    public GameObject MenuPrincipal;
-    public GameObject PantallaAjustes;
-    public Button SonidoOn;
-    public Button SonidoOff;
+    public GameObject  MenuPrincipal;
+    public GameObject  PantallaAjustes;
+    public Button      SonidoOn;
+    public Button      SonidoOff;
 
 
 
@@ -32,25 +32,35 @@ public class screenManager : MonoBehaviour
         Application.Quit();
     }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
     public void CargarPantallaAjustes()
     {
         PantallaAjustes.SetActive(true);
    
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void VolverAlMenu()
     {
         PantallaAjustes.SetActive(false);
 
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void ActivarSonido()
     {
         SonidoOff.gameObject.SetActive(true);
         SonidoOn.gameObject.SetActive(false);
     }
-
+    /// <summary>
+    /// 
+    /// </summary>
     public void DesactivarSonido()
     {
         SonidoOff.gameObject.SetActive(false);

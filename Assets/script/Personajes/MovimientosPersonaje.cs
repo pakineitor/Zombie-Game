@@ -16,7 +16,9 @@ public class MovimientosPersonaje : MonoBehaviour
     public float           movX;
     public float           retroceso      = 400f;
     public float           impactoAZombie = 900f;
-    
+    float                  Cargador = 15;
+    float                  MunicionGuardada = 120;
+
     public Transform       refPie;
     public Transform       ContenedorArma;
     public Transform       mirilla;
@@ -247,7 +249,7 @@ public class MovimientosPersonaje : MonoBehaviour
         
     }
 
-
+    
   
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -255,8 +257,8 @@ public class MovimientosPersonaje : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
-
+    { 
+        
         energiaActual                     = energiaMaxima;
         animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
@@ -304,5 +306,5 @@ public class MovimientosPersonaje : MonoBehaviour
         isMuerto = false;
     }
 
-   
+   //Referencias el texto del cargador del arma para que se vaya actualizando.
 }
