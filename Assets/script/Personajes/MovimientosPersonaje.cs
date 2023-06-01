@@ -31,6 +31,7 @@ public class MovimientosPersonaje : MonoBehaviour
     public GameObject      particulasSangrePakineitor;
     public bool            isSuelo;                                                                                           //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                                                          //--------Variable para ver si ha cogido o no el arma.
+    bool                   isRecargado = true;
 
     int                    energiaMaxima = 4;                                                                                 //--------Representa la vida del personaje.
     int                    energiaActual = 0;                                                                                 //--------Representa la vida actual que tiene el personaje en tiempo real.
@@ -152,8 +153,8 @@ public class MovimientosPersonaje : MonoBehaviour
         Instantiate(particulasDisparo, refCanionPistola.position, Quaternion.identity);
         
         cargadorPistola--;
-                                                                //TXT_CargadorPistola.text = cargadorPistola.ToString(); ñññ
-
+        TXT_CargadorPistola.text = cargadorPistola.ToString();
+        isRecargado = false;
         if (impacto.collider != null)
         {
             if (impacto.collider.gameObject.CompareTag("Zombie"))
@@ -176,7 +177,11 @@ public class MovimientosPersonaje : MonoBehaviour
     /// </summary>
     public void RecargarArma()
     {
-           municionReserva = CalcularMunicionReserva(municionReserva, cargadorPistola);
+           municionReserva = CalcularMunicionReserva();
+           TXT_MunicionReserva.text = municionReserva.ToString();
+           TXT_CargadorPistola.text = capacidadCargador.ToString();
+           
+           isRecargado = true;
     }
     /// <summary>
     /// Método encargado de calcular para actualizar cuánta munición va quedando para poder recargar.
@@ -186,15 +191,11 @@ public class MovimientosPersonaje : MonoBehaviour
     /// <returns>Devuelve la cantidad de balas que le quedan en la reserva.</returns>
     /// 
 
-    public int CalcularMunicionReserva(int municionReserva, int municionCargador)
+    public int CalcularMunicionReserva()
     {
         int resultado = 0;
-        resultado     = 20 - municionCargador;                                                                                      // 20 - las balas que le queden en total en el cargador. 
-        return municionReserva = municionReserva - resultado;                                                                       // Al total de balas guardadas, le restas el resultado de la operación anterior y esa es la munición que te va quedando.
-                                                                                                                                    /* Tenemos 5 balas en el cargador y 120 en la reserva. 
-                                                                                                                                     * 20 - 5 = 15 balas que necesitamos para llegar a 20.
-                                                                                                                                     * Si a 120 le restamos lo que hemos cogido que son 120 - 15 = 105 balas.
-                                                                                                                                     */
+        resultado = 20 - cargadorPistola;
+        return municionReserva = municionReserva - resultado;                                                                                                                              
     }
 
 
@@ -301,8 +302,7 @@ public class MovimientosPersonaje : MonoBehaviour
         mirilla.gameObject.SetActive(false);
         if(isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
         cargadorPistola = capacidadCargador;                                        //Inicializo a 120 el cargador.
-        TXT_CargadorPistola.text = cargadorPistola.ToString();
-        TXT_MunicionReserva.text = municionReserva.ToString();
+       
 
 
     }
@@ -315,8 +315,8 @@ public class MovimientosPersonaje : MonoBehaviour
         isSuelo                           = Physics2D.OverlapCircle(refPie.position, 1f, 1 << 8);                                //--------En esta sentencia de código, guardamos un bool comparando que si hay algo en el área formada por el radio de refPie, que sea true o false.
         animacion.SetFloat( "MoveX"  ,  Mathf.Abs(movX));                                                                        //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
         animacion.SetBool(  "isPiso" ,  isSuelo);
-        TXT_MunicionReserva.text = municionReserva.ToString();                                                                   //--------Actualizo el texto de la munición de reserva.
-        TXT_CargadorPistola.text = cargadorPistola.ToString();                                                                                                                    //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
+                                                                       //--------Actualizo el texto de la munición de reserva.
+                                                                                                                            //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
 
         if (Input.GetButtonDown("Jump") && isSuelo)                                                                              //--------Si está en el sueloy pulso saltar:
         {
@@ -334,7 +334,7 @@ public class MovimientosPersonaje : MonoBehaviour
             ReferenciaManoArmada.position  = PosicionMouse(mirilla); 
             Refcabeza.up                   = refOjos.position - mirilla.position;
             LateUpdate();
-           
+
             if (Input.GetButtonDown("Fire1"))
             {
                 if (cargadorPistola >= 1)               //Compruebo si puedo disparar.
@@ -345,24 +345,26 @@ public class MovimientosPersonaje : MonoBehaviour
                 {
                     //Reproducir sonido sin balas.
                 }
-
-                if (Input.GetKeyDown(KeyCode.R))       //Comrpuebo si puedo recargar.
-                {
-                    if (municionReserva >= 1) //Compruebo que tengo munición para recargar.
-                    {
-                        if (cargadorPistola >= 1 && cargadorPistola < 20) //Y ahora compruebo que no esté lleno la capacidad del cargador.
-                        {
-                            RecargarArma();
-                            municionReserva = CalcularMunicionReserva(municionReserva, cargadorPistola);
-                        }
-                    }
-                    else
-                    {
-                        //Reproducir algún sonido;
-                    }
-                    
-                }
             }
+
+            if (Input.GetKeyDown(KeyCode.R) && isRecargado==false)       //Comrpuebo si puedo recargar.
+            {
+                if (municionReserva >= 1) //Compruebo que tengo munición para recargar.
+                {
+                    if (cargadorPistola >= 1 && cargadorPistola < 20) //Y ahora compruebo que no esté lleno la capacidad del cargador.
+                    {
+                        RecargarArma();
+                        municionReserva = CalcularMunicionReserva();
+
+                    }
+                }
+                else
+                {
+                        //Reproducir algún sonido;
+                }
+                    
+            }
+            
 
             
         }
