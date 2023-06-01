@@ -16,9 +16,7 @@ public class MovimientosPersonaje : MonoBehaviour
     public float           movX;
     public float           retroceso      = 400f;
     public float           impactoAZombie = 900f;
-    float                  Cargador = 15;
-    float                  MunicionGuardada = 120;
-
+    
     public Transform       refPie;
     public Transform       ContenedorArma;
     public Transform       mirilla;
@@ -34,10 +32,17 @@ public class MovimientosPersonaje : MonoBehaviour
     public bool            isSuelo;                                                                                           //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                                                          //--------Variable para ver si ha cogido o no el arma.
 
-    int                    energiaMaxima = 4;
-    int                    energiaActual = 0;
+    int                    energiaMaxima = 4;                                                                                 //--------Representa la vida del personaje.
+    int                    energiaActual = 0;                                                                                 //--------Representa la vida actual que tiene el personaje en tiempo real.
+    int                    cargadorPistola= 0;                                                                                //--------Representa las balas que tiene el arma.
+    int                    municionReserva = 120;                                                                             //--------Representa las balas que tiene guardadas para recargar.
+    int                    capacidadCargador = 20;                                                                            //Representa los disparos que va a poder realizar.
+
     public UnityEngine.UI.Image mascaraDaño;
-    public TMPro.TextMeshProUGUI texto;
+    public TMPro.TextMeshProUGUI TXT_Vida;
+    public TMPro.TextMeshProUGUI TXT_CargadorPistola;                                                                         //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
+    public TMPro.TextMeshProUGUI TXT_MunicionReserva;                                                                         //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
+
     public UnityEngine.UI.Image BarraVerde;
     public UnityEngine.UI.Image telaNegra;
     float ValorDeseadoPantallaNegra = 1f;
@@ -145,6 +150,9 @@ public class MovimientosPersonaje : MonoBehaviour
         rigidbody2.AddForce(retroceso * -direccion, ForceMode2D.Impulse);
         impacto                            =  Physics2D.Raycast(ContenedorArma.position, direccion, 1000f, ~(1 << 10));            //--------Método al que se le pasa un origen, una posición y con normalized convertimos ese vector en una magnitud. Este método ofrecido por Unity simula la bañla del arma
         Instantiate(particulasDisparo, refCanionPistola.position, Quaternion.identity);
+        
+        cargadorPistola--;
+                                                                //TXT_CargadorPistola.text = cargadorPistola.ToString(); ñññ
 
         if (impacto.collider != null)
         {
@@ -162,6 +170,34 @@ public class MovimientosPersonaje : MonoBehaviour
         }
 
     }
+
+    /// <summary>
+    /// Método que va a recargar el arma.
+    /// </summary>
+    public void RecargarArma()
+    {
+           municionReserva = CalcularMunicionReserva(municionReserva, cargadorPistola);
+    }
+    /// <summary>
+    /// Método encargado de calcular para actualizar cuánta munición va quedando para poder recargar.
+    /// </summary>
+    /// <param name="municionReserva"></param>
+    /// <param name="municionCargador"></param>
+    /// <returns>Devuelve la cantidad de balas que le quedan en la reserva.</returns>
+    /// 
+
+    public int CalcularMunicionReserva(int municionReserva, int municionCargador)
+    {
+        int resultado = 0;
+        resultado     = 20 - municionCargador;                                                                                      // 20 - las balas que le queden en total en el cargador. 
+        return municionReserva = municionReserva - resultado;                                                                       // Al total de balas guardadas, le restas el resultado de la operación anterior y esa es la munición que te va quedando.
+                                                                                                                                    /* Tenemos 5 balas en el cargador y 120 en la reserva. 
+                                                                                                                                     * 20 - 5 = 15 balas que necesitamos para llegar a 20.
+                                                                                                                                     * Si a 120 le restamos lo que hemos cogido que son 120 - 15 = 105 balas.
+                                                                                                                                     */
+    }
+
+
 
                                                                                                                                    /// <summary>
                                                                                                                                    /// Función que ejecutará la simulación del impacto de la bala al zombie.
@@ -212,7 +248,7 @@ public class MovimientosPersonaje : MonoBehaviour
 
            
 
-            texto.text = energiaActual.ToString();
+            TXT_Vida.text = energiaActual.ToString();
 
             Debug.Log("Energía actual: " + energiaActual);
             mascaraDaño.color             = new Color(1, 1, 1, transparencia);
@@ -249,7 +285,7 @@ public class MovimientosPersonaje : MonoBehaviour
         
     }
 
-    
+   
   
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -264,7 +300,10 @@ public class MovimientosPersonaje : MonoBehaviour
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
         mirilla.gameObject.SetActive(false);
         if(isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
-        
+        cargadorPistola = capacidadCargador;                                        //Inicializo a 120 el cargador.
+        TXT_CargadorPistola.text = cargadorPistola.ToString();
+        TXT_MunicionReserva.text = municionReserva.ToString();
+
 
     }
 
@@ -275,8 +314,9 @@ public class MovimientosPersonaje : MonoBehaviour
         movX                              = Input.GetAxis("Horizontal");                                                         //--------Extraemos el axis horizontal para el movimiento en el eje x con -1 o 1. 
         isSuelo                           = Physics2D.OverlapCircle(refPie.position, 1f, 1 << 8);                                //--------En esta sentencia de código, guardamos un bool comparando que si hay algo en el área formada por el radio de refPie, que sea true o false.
         animacion.SetFloat( "MoveX"  ,  Mathf.Abs(movX));                                                                        //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
-        animacion.SetBool(  "isPiso" ,  isSuelo); 
-        //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
+        animacion.SetBool(  "isPiso" ,  isSuelo);
+        TXT_MunicionReserva.text = municionReserva.ToString();                                                                   //--------Actualizo el texto de la munición de reserva.
+        TXT_CargadorPistola.text = cargadorPistola.ToString();                                                                                                                    //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
 
         if (Input.GetButtonDown("Jump") && isSuelo)                                                                              //--------Si está en el sueloy pulso saltar:
         {
@@ -297,7 +337,31 @@ public class MovimientosPersonaje : MonoBehaviour
            
             if (Input.GetButtonDown("Fire1"))
             {
-                Disparar();
+                if (cargadorPistola >= 1)               //Compruebo si puedo disparar.
+                {
+                    Disparar();
+                }
+                else
+                {
+                    //Reproducir sonido sin balas.
+                }
+
+                if (Input.GetKeyDown(KeyCode.R))       //Comrpuebo si puedo recargar.
+                {
+                    if (municionReserva >= 1) //Compruebo que tengo munición para recargar.
+                    {
+                        if (cargadorPistola >= 1 && cargadorPistola < 20) //Y ahora compruebo que no esté lleno la capacidad del cargador.
+                        {
+                            RecargarArma();
+                            municionReserva = CalcularMunicionReserva(municionReserva, cargadorPistola);
+                        }
+                    }
+                    else
+                    {
+                        //Reproducir algún sonido;
+                    }
+                    
+                }
             }
 
             
@@ -306,5 +370,5 @@ public class MovimientosPersonaje : MonoBehaviour
         isMuerto = false;
     }
 
-   //Referencias el texto del cargador del arma para que se vaya actualizando.
+   
 }
