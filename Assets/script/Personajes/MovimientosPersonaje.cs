@@ -195,6 +195,7 @@ public class MovimientosPersonaje : MonoBehaviour
     {
         int resultado = 0;
         resultado = 20 - cargadorPistola;
+        cargadorPistola = capacidadCargador;
         return municionReserva = municionReserva - resultado;                                                                                                                              
     }
 
@@ -351,7 +352,7 @@ public class MovimientosPersonaje : MonoBehaviour
             {
                 if (municionReserva >= 1) //Compruebo que tengo munición para recargar.
                 {
-                    if (cargadorPistola >= 1 && cargadorPistola < 20) //Y ahora compruebo que no esté lleno la capacidad del cargador.
+                    if (cargadorPistola >= 0 && cargadorPistola < 20) //Y ahora compruebo que no esté lleno la capacidad del cargador.
                     {
                         RecargarArma();
                         municionReserva = CalcularMunicionReserva();
