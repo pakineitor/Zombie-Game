@@ -31,7 +31,8 @@ public class MovimientosPersonaje : MonoBehaviour
     public GameObject      particulasSangrePakineitor;
     public bool            isSuelo;                                                                                           //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                                                          //--------Variable para ver si ha cogido o no el arma.
-    bool                   isRecargado = true;
+    bool                   isRecargado = true; //Si está recargado el cargador al máximo de su capacidad. Por defecto es que sí.
+    bool                   isDisparar = true;  // Si puedo disparar o no.
 
     int                    energiaMaxima = 4;                                                                                 //--------Representa la vida del personaje.
     int                    energiaActual = 0;                                                                                 //--------Representa la vida actual que tiene el personaje en tiempo real.
@@ -48,6 +49,45 @@ public class MovimientosPersonaje : MonoBehaviour
     public UnityEngine.UI.Image telaNegra;
     float ValorDeseadoPantallaNegra = 1f;
     bool isMuerto = false;
+
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="disparar"></param>
+    public void setIsDisparar(bool disparar)
+    {
+        this.isDisparar = disparar;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public bool getIsDisparar()
+    {
+        return this.isDisparar;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="recargado"></param>
+    void setCargado(bool recargado)
+    {
+        this.isRecargado = recargado;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public bool getRecargado()
+    {
+        return this.isRecargado;
+    }
+
     /// <summary>
     /// Función que va a ejecutar el salto.
     /// </summary>
@@ -154,7 +194,8 @@ public class MovimientosPersonaje : MonoBehaviour
         
         cargadorPistola--;
         TXT_CargadorPistola.text = cargadorPistola.ToString();
-        isRecargado = false;
+        setCargado(false);
+
         if (impacto.collider != null)
         {
             if (impacto.collider.gameObject.CompareTag("Zombie"))
@@ -166,10 +207,13 @@ public class MovimientosPersonaje : MonoBehaviour
             if (impacto.collider.gameObject.CompareTag("Cabeza"))
             {
                 impacto.transform.GetComponent<Zombies>().ZombieMuere();
-           
             }
         }
-
+        if (cargadorPistola == 0)
+        {
+            RecargarArma();
+            municionReserva = CalcularMunicionReserva();
+        }
     }
 
     /// <summary>
@@ -180,8 +224,8 @@ public class MovimientosPersonaje : MonoBehaviour
            municionReserva = CalcularMunicionReserva();
            TXT_MunicionReserva.text = municionReserva.ToString();
            TXT_CargadorPistola.text = capacidadCargador.ToString();
-           
-           isRecargado = true;
+           setCargado(true);
+          
     }
     /// <summary>
     /// Método encargado de calcular para actualizar cuánta munición va quedando para poder recargar.
@@ -336,37 +380,40 @@ public class MovimientosPersonaje : MonoBehaviour
             Refcabeza.up                   = refOjos.position - mirilla.position;
             LateUpdate();
 
-            if (Input.GetButtonDown("Fire1"))
+            if (getIsDisparar() == true)  //Compruebo si estoy en el menú de pausa para no poder disparar ni recargar.
             {
-                if (cargadorPistola >= 1)               //Compruebo si puedo disparar.
+                if (Input.GetButtonDown("Fire1"))
                 {
-                    Disparar();
-                }
-                else
-                {
-                    //Reproducir sonido sin balas.
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.R) && isRecargado==false)       //Comrpuebo si puedo recargar.
-            {
-                if (municionReserva >= 1) //Compruebo que tengo munición para recargar.
-                {
-                    if (cargadorPistola >= 0 && cargadorPistola < 20) //Y ahora compruebo que no esté lleno la capacidad del cargador.
+               
+                    if (cargadorPistola >= 1)               //Compruebo si puedo disparar.
                     {
-                        RecargarArma();
-                        municionReserva = CalcularMunicionReserva();
-
+                        Disparar();
+                    }
+                    else
+                    {
+                        //Reproducir sonido sin balas.
                     }
                 }
-                else
-                {
-                        //Reproducir algún sonido;
-                }
-                    
-            }
-            
 
+                if (Input.GetKeyDown(KeyCode.R) && getRecargado() == false)       //Comrpuebo si puedo recargar.
+                {
+                    if (municionReserva >= 1) //Compruebo que tengo munición para recargar.
+                    {
+                        if (cargadorPistola < 20) //Y ahora compruebo que no esté lleno la capacidad del cargador.
+                        {
+                            RecargarArma();
+                            municionReserva = CalcularMunicionReserva();
+
+                        }
+                    }
+                    else
+                    {
+                        //Reproducir algún sonido;
+                    }
+
+                }
+
+            }
             
         }
 

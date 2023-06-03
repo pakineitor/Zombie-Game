@@ -12,7 +12,7 @@ public class screenManager : MonoBehaviour
     public GameObject  PantallaAjustes;
     public Button      SonidoOn;
     public Button      SonidoOff;
-
+  
 
 
     /// <summary>

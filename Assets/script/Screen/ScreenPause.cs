@@ -8,20 +8,21 @@ public class ScreenPause : MonoBehaviour
     string NombreEscena;
     public GameObject PausaMenu;
     public GameObject PantallaControles;
-
+    public GameObject Pakineitor;
 
     public void Pausar()
     {
        
         PausaMenu.SetActive(true);
         Time.timeScale = 0;
-
+        Pakineitor.GetComponent<MovimientosPersonaje>().setIsDisparar(false);
     }
 
    public void ReanudarPartida()
     {
         Time.timeScale = 1;
         PausaMenu.SetActive(false);
+        Pakineitor.GetComponent<MovimientosPersonaje>().setIsDisparar(true);
     }
 
     /// <summary>
