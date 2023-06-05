@@ -9,6 +9,7 @@ TagManager:
   - Cabeza
   - SonidoOn
   - SonidoOf
+  - BonusMunicion
   layers:
   - Default
   - TransparentFX

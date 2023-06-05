@@ -9,16 +9,17 @@ public class MovimientosPersonaje : MonoBehaviour
 {
 
     Animator               animacion;
-    Rigidbody2D            rigidbody2;                                                                                       //--------Vamos a referenciarle el Rigibody para que apunte al aplicado al personaje desde el editor. De esta manera podremos aplicarle las fuerzas necesarias para hacer real un salto.
+    Rigidbody2D            rigidbody2;                                             //--------Vamos a referenciarle el Rigibody para que apunte al aplicado al personaje desde el editor. De esta manera podremos aplicarle las fuerzas necesarias para hacer real un salto.
     
     public float           fuerzaSalto;
     public float           velx;
     public float           movX;
-    public float           retroceso      = 400f;
-    public float           impactoAZombie = 900f;
+    public float           retroceso             = 400f;
+    public float           impactoAZombie        = 900f;
     
     public Transform       refPie;
     public Transform       ContenedorArma;
+    public Transform       ContenedorBonus;
     public Transform       mirilla;
     public Transform       ReferenciaManoArmada;
     public Transform       Refcabeza;
@@ -26,29 +27,57 @@ public class MovimientosPersonaje : MonoBehaviour
     public Transform       refCanionPistola;
 
     RaycastHit2D           impacto;
+   
+
     public GameObject      particulasDisparo;
     public GameObject      particulasSangre;
     public GameObject      particulasSangrePakineitor;
-    public bool            isSuelo;                                                                                           //--------Objeto que se va a referenciar al transform del arma.
-    bool                   isArmado;                                                                                          //--------Variable para ver si ha cogido o no el arma.
-    bool                   isRecargado = true; //Si está recargado el cargador al máximo de su capacidad. Por defecto es que sí.
-    bool                   isDisparar = true;  // Si puedo disparar o no.
+    public GameObject      BonusMunicion;
 
-    int                    energiaMaxima = 4;                                                                                 //--------Representa la vida del personaje.
-    int                    energiaActual = 0;                                                                                 //--------Representa la vida actual que tiene el personaje en tiempo real.
-    int                    cargadorPistola= 0;                                                                                //--------Representa las balas que tiene el arma.
-    int                    municionReserva = 120;                                                                             //--------Representa las balas que tiene guardadas para recargar.
-    int                    capacidadCargador = 20;                                                                            //Representa los disparos que va a poder realizar.
+    public bool            isSuelo;                                                 //--------Objeto que se va a referenciar al transform del arma.
+    bool                   isArmado;                                                //--------Variable para ver si ha cogido o no el arma.
+    bool                   isRecargado          = true;                             //--------Si está recargado el cargador al máximo de su capacidad. Por defecto es que sí.
+    bool                   isDisparar           = true;                             //--------Si puedo disparar o no.
+    bool                   isBonusCogido        = false;                            
+    bool                   isMuerto             = false;                            
+
+    int                    energiaMaxima        = 4;                                //--------Representa la vida del personaje.
+    int                    energiaActual        = 0;                                //--------Representa la vida actual que tiene el personaje en tiempo real.
+    int                    cargadorPistola      = 0;                                //--------Representa las balas que tiene el arma.
+    int                    municionReserva      = 120;                              //--------Representa las balas que tiene guardadas para recargar.
+    int                    capacidadCargador    = 20;                               //--------Representa los disparos que va a poder realizar.
 
     public UnityEngine.UI.Image mascaraDaño;
     public TMPro.TextMeshProUGUI TXT_Vida;
-    public TMPro.TextMeshProUGUI TXT_CargadorPistola;                                                                         //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
-    public TMPro.TextMeshProUGUI TXT_MunicionReserva;                                                                         //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
+    public TMPro.TextMeshProUGUI TXT_CargadorPistola;                               //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
+    public TMPro.TextMeshProUGUI TXT_MunicionReserva;                               //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
 
     public UnityEngine.UI.Image BarraVerde;
     public UnityEngine.UI.Image telaNegra;
-    float ValorDeseadoPantallaNegra = 1f;
-    bool isMuerto = false;
+    float ValorDeseadoPantallaNegra             = 1f;
+    
+
+    //---------------------------------------------------------------------------- INICIO SETs -----------------------------------------------------------------------------------------------------------
+
+    public void BonusCogido(int municionMaxima, int cargadorPistola)
+    {
+        this.cargadorPistola = cargadorPistola;
+        this.municionReserva = municionMaxima;
+    }
+
+    public void setIsBonusCogido(bool isBonusCogido)
+    {
+        this.isBonusCogido = isBonusCogido;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="isSuelo"></param>
+    public void setIsSuelo(bool isSuelo)
+    {
+        this.isSuelo= isSuelo;
+    }
 
 
 
@@ -61,14 +90,7 @@ public class MovimientosPersonaje : MonoBehaviour
         this.isDisparar = disparar;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public bool getIsDisparar()
-    {
-        return this.isDisparar;
-    }
+   
 
     /// <summary>
     /// 
@@ -78,6 +100,28 @@ public class MovimientosPersonaje : MonoBehaviour
     {
         this.isRecargado = recargado;
     }
+    // ---------------------------------------------------------------------------- FIN SETs -----------------------------------------------------------------------------------------------------------
+
+
+    //**************************************************************************** INICIO GET **********************************************************************************************************
+
+
+    public bool getISuelo()
+    {
+        return this.isSuelo;
+    }
+
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public bool getIsDisparar()
+    {
+        return this.isDisparar;
+    }
+
 
     /// <summary>
     /// 
@@ -91,6 +135,12 @@ public class MovimientosPersonaje : MonoBehaviour
     /// <summary>
     /// Función que va a ejecutar el salto.
     /// </summary>
+
+    //**************************************************************************** FIN GET **********************************************************************************************************
+
+
+
+
     public void Saltar()
     { 
             rigidbody2.AddForce(new Vector2(0, fuerzaSalto), ForceMode2D.Impulse);                                            //--------Si pulsamos saltar le añadimos una fuerza con un vector2 y así poder pasarle la fuerza en ambos ejes, y le pasamos el tipo de fuerza que en este caso es impulso.
@@ -134,6 +184,14 @@ public class MovimientosPersonaje : MonoBehaviour
             ContenedorArma.gameObject.SetActive(true);
             isArmado                     = true;
         }
+
+        if (collision.gameObject.CompareTag("BonusMunicion"))
+        {
+            isBonusCogido = true;
+            Destroy(collision.gameObject);
+            setIsBonusCogido(true);
+        }
+       
     }
 
 
@@ -172,13 +230,10 @@ public class MovimientosPersonaje : MonoBehaviour
 
     private void LateUpdate()
     {
-
         if (isArmado)
         {
             Refcabeza.up                   = refOjos.position - mirilla.position;
-        }
-
-        
+        }  
     }
 
 
@@ -331,7 +386,8 @@ public class MovimientosPersonaje : MonoBehaviour
         
     }
 
-   
+
+    
   
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -346,8 +402,8 @@ public class MovimientosPersonaje : MonoBehaviour
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
         mirilla.gameObject.SetActive(false);
         if(isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
-        cargadorPistola = capacidadCargador;                                        //Inicializo a 120 el cargador.
-       
+        cargadorPistola = capacidadCargador;                                                                                     //--------Inicializo a 120 el cargador.
+
 
 
     }
@@ -360,8 +416,9 @@ public class MovimientosPersonaje : MonoBehaviour
         isSuelo                           = Physics2D.OverlapCircle(refPie.position, 1f, 1 << 8);                                //--------En esta sentencia de código, guardamos un bool comparando que si hay algo en el área formada por el radio de refPie, que sea true o false.
         animacion.SetFloat( "MoveX"  ,  Mathf.Abs(movX));                                                                        //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
         animacion.SetBool(  "isPiso" ,  isSuelo);
-                                                                       //--------Actualizo el texto de la munición de reserva.
-                                                                                                                            //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
+
+        if (isBonusCogido == true) municionReserva = 120;                                                                        //--------Actualizo el texto de la munición de reserva.
+                                                                                                                                 //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
 
         if (Input.GetButtonDown("Jump") && isSuelo)                                                                              //--------Si está en el sueloy pulso saltar:
         {
@@ -380,12 +437,12 @@ public class MovimientosPersonaje : MonoBehaviour
             Refcabeza.up                   = refOjos.position - mirilla.position;
             LateUpdate();
 
-            if (getIsDisparar() == true)  //Compruebo si estoy en el menú de pausa para no poder disparar ni recargar.
+            if (getIsDisparar() == true)                                                                                        //--------Compruebo si estoy en el menú de pausa para no poder disparar ni recargar.
             {
                 if (Input.GetButtonDown("Fire1"))
                 {
                
-                    if (cargadorPistola >= 1)               //Compruebo si puedo disparar.
+                    if (cargadorPistola >= 1)                                                                                   //--------Compruebo si puedo disparar.
                     {
                         Disparar();
                     }
@@ -395,11 +452,11 @@ public class MovimientosPersonaje : MonoBehaviour
                     }
                 }
 
-                if (Input.GetKeyDown(KeyCode.R) && getRecargado() == false)       //Comrpuebo si puedo recargar.
+                if (Input.GetKeyDown(KeyCode.R) && getRecargado() == false)                                                     //--------Comrpuebo si puedo recargar.
                 {
-                    if (municionReserva >= 1) //Compruebo que tengo munición para recargar.
+                    if (municionReserva >= 1)                                                                                   //--------Compruebo que tengo munición para recargar.
                     {
-                        if (cargadorPistola < 20) //Y ahora compruebo que no esté lleno la capacidad del cargador.
+                        if (cargadorPistola < 20)                                                                               //--------Y ahora compruebo que no esté lleno la capacidad del cargador.
                         {
                             RecargarArma();
                             municionReserva = CalcularMunicionReserva();
