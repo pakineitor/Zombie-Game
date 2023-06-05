@@ -33,6 +33,7 @@ public class MovimientosPersonaje : MonoBehaviour
     public GameObject      particulasSangre;
     public GameObject      particulasSangrePakineitor;
     public GameObject      BonusMunicion;
+    public GameObject      MunicionInterfaz;
 
     public bool            isSuelo;                                                 //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                //--------Variable para ver si ha cogido o no el arma.
@@ -182,6 +183,7 @@ public class MovimientosPersonaje : MonoBehaviour
             isArmado                     = true;
             Destroy(collision.gameObject);
             ContenedorArma.gameObject.SetActive(true);
+            MunicionInterfaz.gameObject.SetActive(true);
             isArmado                     = true;
         }
 
@@ -468,10 +470,17 @@ public class MovimientosPersonaje : MonoBehaviour
                         //Reproducir algún sonido;
                     }
 
+
                 }
 
             }
-            
+
+            if (isBonusCogido == true)
+            {
+                TXT_CargadorPistola.text = capacidadCargador.ToString();
+                TXT_MunicionReserva.text = 120.ToString();
+                setIsBonusCogido(false);
+            }
         }
 
         isMuerto = false;
