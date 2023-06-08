@@ -20,10 +20,13 @@ public class Zombies : MonoBehaviour
     public GameObject   prefabMuerto;
     public Transform    pakineitor;
     Animator            anim;
+    bool                distanciaVertical;
+    public Transform    refSuelo;
     enum                tipoComportamientoZombie { pasivo, persecucion, ataque}
     tipoComportamientoZombie EstadoZombie                                   = tipoComportamientoZombie.pasivo;
 
     bool                isMordida                                           = false;
+    bool isSuelo;
 
     public void ZombieMuere()
     {
@@ -38,6 +41,8 @@ public class Zombies : MonoBehaviour
     void EstadoActualZombie(tipoComportamientoZombie EstadoActualDelZombie)
     {
         distanciaConPakineitor                                              = Mathf.Abs(pakineitor.position.x - transform.position.x);
+        distanciaVertical                                                   = Mathf.Abs(pakineitor.position.y - transform.position.y) < 15f;
+        isSuelo                                                             = Physics2D.OverlapCircle(refSuelo.position, 1f, 1 << 8);              //---------Comprobamos si el zombie está o no en el suelo.
 
         switch (EstadoActualDelZombie)
         {
@@ -51,8 +56,8 @@ public class Zombies : MonoBehaviour
                 if (transform.position.x > limiteCaminarDerecho) direccion  = -1;
                 anim.speed                                                  = 1f;
 
-                //Entrar en la zona de persecucción
-                if (distanciaConPakineitor < zonaActiva) EstadoZombie       = tipoComportamientoZombie.persecucion;
+                //Entrar en la zona de persecución
+                if (distanciaConPakineitor < zonaActiva && distanciaVertical) EstadoZombie       = tipoComportamientoZombie.persecucion;
             break;
 
             case tipoComportamientoZombie.persecucion:
@@ -68,7 +73,7 @@ public class Zombies : MonoBehaviour
                 anim.speed                                                  = 1.8f;
 
                 //Sale y vuelve a la zona pasiva.
-                if (distanciaConPakineitor > zonaPersecuccion) EstadoZombie = tipoComportamientoZombie.pasivo;
+                if (distanciaConPakineitor > zonaPersecuccion || !distanciaVertical) EstadoZombie = tipoComportamientoZombie.pasivo;
 
                 //Entre a la zona de ataque:
                 if (distanciaConPakineitor < distanciaAtaque) EstadoZombie  = tipoComportamientoZombie.ataque;
@@ -96,6 +101,8 @@ public class Zombies : MonoBehaviour
                 
                 break;
         }
+
+        if (!isSuelo) rb2d.velocity = new Vector3(0, rb2d.velocity.y);                                //Si no hay suelo, la velocidad se pone en 0.
         transform.localScale = new Vector3(escalaDefault.x * direccion, escalaDefault.y, escalaDefault.z);
     }
 
