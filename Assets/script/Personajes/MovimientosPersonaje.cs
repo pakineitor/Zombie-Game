@@ -34,13 +34,15 @@ public class MovimientosPersonaje : MonoBehaviour
     public GameObject      particulasSangrePakineitor;
     public GameObject      BonusMunicion;
     public GameObject      MunicionInterfaz;
+    public GameObject      BonusBotiquin;
 
     public bool            isSuelo;                                                 //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                //--------Variable para ver si ha cogido o no el arma.
     bool                   isRecargado          = true;                             //--------Si está recargado el cargador al máximo de su capacidad. Por defecto es que sí.
     bool                   isDisparar           = true;                             //--------Si puedo disparar o no.
-    bool                   isBonusCogido        = false;                            
-    bool                   isMuerto             = false;                            
+    bool                   isBonusMunicionCogido        = false;                            
+    bool                   isMuerto             = false;
+    bool                   isBonusBotiquinCogido = false;
 
     int                    energiaMaxima        = 4;                                //--------Representa la vida del personaje.
     int                    energiaActual        = 0;                                //--------Representa la vida actual que tiene el personaje en tiempo real.
@@ -56,9 +58,21 @@ public class MovimientosPersonaje : MonoBehaviour
     public UnityEngine.UI.Image BarraVerde;
     public UnityEngine.UI.Image telaNegra;
     float ValorDeseadoPantallaNegra             = 1f;
-    
+
 
     //---------------------------------------------------------------------------- INICIO SETs -----------------------------------------------------------------------------------------------------------
+
+
+   
+    public void setBonusBotiquinCogido(bool isCogido)
+    {
+        isBonusBotiquinCogido=isCogido;
+    }
+
+    public bool IsBonusBotiquinCogido()
+    {
+        return isBonusBotiquinCogido;
+    }
 
     public void BonusCogido(int municionMaxima, int cargadorPistola)
     {
@@ -66,9 +80,9 @@ public class MovimientosPersonaje : MonoBehaviour
         this.municionReserva = municionMaxima;
     }
 
-    public void setIsBonusCogido(bool isBonusCogido)
+    public void setIsBonusMunicionCogido(bool isBonusCogido)
     {
-        this.isBonusCogido = isBonusCogido;
+        isBonusMunicionCogido = isBonusCogido;
     }
 
     /// <summary>
@@ -106,6 +120,10 @@ public class MovimientosPersonaje : MonoBehaviour
 
     //**************************************************************************** INICIO GET **********************************************************************************************************
 
+    public bool getIsBonusBotiquinCogido()
+    {
+        return isBonusBotiquinCogido;
+    }
 
     public bool getISuelo()
     {
@@ -184,14 +202,18 @@ public class MovimientosPersonaje : MonoBehaviour
             Destroy(collision.gameObject);
             ContenedorArma.gameObject.SetActive(true);
             MunicionInterfaz.gameObject.SetActive(true);
-            isArmado                     = true;
         }
 
         if (collision.gameObject.CompareTag("BonusMunicion"))
         {
-            isBonusCogido = true;
+            setIsBonusMunicionCogido(true);
             Destroy(collision.gameObject);
-            setIsBonusCogido(true);
+        }
+
+        if (collision.gameObject.CompareTag("Botiquin"))
+        {
+           setBonusBotiquinCogido(true);
+           Destroy(collision.gameObject); 
         }
        
     }
@@ -349,13 +371,11 @@ public class MovimientosPersonaje : MonoBehaviour
                 BarraVerde.fillAmount     = 0.036f;
             }
 
-           
-
             TXT_Vida.text = energiaActual.ToString();
 
             Debug.Log("Energía actual: " + energiaActual);
             mascaraDaño.color             = new Color(1, 1, 1, transparencia);
-            
+           
         }
     }
 
@@ -419,7 +439,7 @@ public class MovimientosPersonaje : MonoBehaviour
         animacion.SetFloat( "MoveX"  ,  Mathf.Abs(movX));                                                                        //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
         animacion.SetBool(  "isPiso" ,  isSuelo);
 
-        if (isBonusCogido == true) municionReserva = 120;                                                                        //--------Actualizo el texto de la munición de reserva.
+        if (isBonusMunicionCogido == true) municionReserva = 120;                                                                        //--------Actualizo el texto de la munición de reserva.
                                                                                                                                  //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
 
         if (Input.GetButtonDown("Jump") && isSuelo)                                                                              //--------Si está en el sueloy pulso saltar:
@@ -475,11 +495,17 @@ public class MovimientosPersonaje : MonoBehaviour
 
             }
 
-            if (isBonusCogido == true)
+            if (isBonusMunicionCogido == true)
             {
                 TXT_CargadorPistola.text = capacidadCargador.ToString();
                 TXT_MunicionReserva.text = 120.ToString();
-                setIsBonusCogido(false);
+                setIsBonusMunicionCogido(false);
+            }
+
+            if(isBonusBotiquinCogido == true)
+            {
+                mascaraDaño.color = new Color(1, 1, 1, 0);
+                BarraVerde.fillAmount = 1f;
             }
         }
 

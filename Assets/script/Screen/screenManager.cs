@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,7 +16,7 @@ public class screenManager : MonoBehaviour
     public Button      SonidoOn;
     public Button      SonidoOff;
     private string     inputMensaje;
-    string password = "gfnrfccettcsdiwa", correo = "pakineitor123@gmail.com";
+    //string password = "gfnrfccettcsdiwa", correo = "pakineitor123@gmail.com";
 
     public void setMensaje(string mensaje)
     {
@@ -112,7 +113,8 @@ public class screenManager : MonoBehaviour
             Debug.Log("Error sending email: " + e.Message);
         }*/
 
-        Debug.Log(getMensaje());
+        Debug.Log("El mensaje: " + getMensaje() + "se ha enviado con éxitoa nuestros técnicos, Gracias por confiar en nosotros");
+        
     }
 
 }
