@@ -63,23 +63,39 @@ public class MovimientosPersonaje : MonoBehaviour
     //---------------------------------------------------------------------------- INICIO SETs -----------------------------------------------------------------------------------------------------------
 
 
-   
+                                                                                              /// <summary>
+                                                                                              /// Método que guarda un booleano en el atributo del objeto.
+                                                                                              /// </summary>
+                                                                                              /// <param name="isCogido"> bool </param>
     public void setBonusBotiquinCogido(bool isCogido)
     {
         isBonusBotiquinCogido=isCogido;
     }
 
+                                                                                              /// <summary>
+                                                                                              /// Método que guarda un booleano en el atributo del objeto.
+                                                                                              /// </summary>
+                                                                                              /// <returns></returns>
     public bool IsBonusBotiquinCogido()
     {
         return isBonusBotiquinCogido;
     }
 
+                                                                                              /// <summary>
+                                                                                              /// Método que se encarga de establecer un int en cargador del arma y en municiónReserva.
+                                                                                              /// </summary>
+                                                                                              /// <param name="municionMaxima"></param>
+                                                                                              /// <param name="cargadorPistola"></param>
     public void BonusCogido(int municionMaxima, int cargadorPistola)
     {
         this.cargadorPistola = cargadorPistola;
         this.municionReserva = municionMaxima;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="isBonusCogido"></param>
     public void setIsBonusMunicionCogido(bool isBonusCogido)
     {
         isBonusMunicionCogido = isBonusCogido;
@@ -120,11 +136,18 @@ public class MovimientosPersonaje : MonoBehaviour
 
     //**************************************************************************** INICIO GET **********************************************************************************************************
 
+                                                                                            /// <summary>
+                                                                                            /// Este método se encarga de extraer y devolver un booleano para gestionar si se ha cogido o no el bonus de la vida.
+                                                                                            /// </summary>
+                                                                                            /// <returns>isBonusBotiquinCogido</returns>
     public bool getIsBonusBotiquinCogido()
     {
         return isBonusBotiquinCogido;
     }
-
+                                                                                            /// <summary>
+                                                                                            /// Este método se encarga de comprobar devolviendo un booleano, si el personaje que maneja el usuario, está tocando el suelo o no.
+                                                                                            /// </summary>
+                                                                                            /// <returns>isSuelo</returns>
     public bool getISuelo()
     {
         return this.isSuelo;
@@ -132,20 +155,20 @@ public class MovimientosPersonaje : MonoBehaviour
 
 
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
+                                                                                            /// <summary>
+                                                                                            /// Método que se encarga de comprobar devolviendo un booleano si se puede disparar o no.
+                                                                                            /// </summary>
+                                                                                            /// <returns>isDisparar</returns>
     public bool getIsDisparar()
     {
         return this.isDisparar;
     }
 
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
+                                                                                            /// <summary>
+                                                                                            /// Método que se encarga de comprobar devolviendo un booleano si se puede recargar o no.
+                                                                                            /// </summary>
+                                                                                            /// <returns>isRecargado</returns>
     public bool getRecargado()
     {
         return this.isRecargado;
@@ -306,13 +329,13 @@ public class MovimientosPersonaje : MonoBehaviour
            setCargado(true);
           
     }
-    /// <summary>
-    /// Método encargado de calcular para actualizar cuánta munición va quedando para poder recargar.
-    /// </summary>
-    /// <param name="municionReserva"></param>
-    /// <param name="municionCargador"></param>
-    /// <returns>Devuelve la cantidad de balas que le quedan en la reserva.</returns>
-    /// 
+                                                                                                                                  /// <summary>
+                                                                                                                                  /// Método encargado de calcular para actualizar cuánta munición va quedando para poder recargar.
+                                                                                                                                  /// </summary>
+                                                                                                                                  /// <param name="municionReserva"></param>
+                                                                                                                                  /// <param name="municionCargador"></param>
+                                                                                                                                  /// <returns>Devuelve la cantidad de balas que le quedan en la reserva.</returns>
+                                                                                                                                  /// 
 
     public int CalcularMunicionReserva()
     {
@@ -333,10 +356,10 @@ public class MovimientosPersonaje : MonoBehaviour
         Instantiate(particulasSangre, impacto.point, Quaternion.identity);
     }
 
-                                                                                                                                    /// <summary>
-                                                                                                                                    /// 
-                                                                                                                                    /// </summary>
-                                                                                                                                    /// <param name="posicion"></param>
+                                                                                                                                   /// <summary>
+                                                                                                                                   /// 
+                                                                                                                                   /// </summary>
+                                                                                                                                   /// <param name="posicion"></param>
     public void RecibirDaño(Vector2 posicion)
     {
         energiaActual                      = energiaMaxima--;
@@ -379,9 +402,9 @@ public class MovimientosPersonaje : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Método que pone la transparencia de la pantalla negra opaca.
-    /// </summary>
+                                                                                                                                    /// <summary>
+                                                                                                                                    /// Método que pone la transparencia de la pantalla negra opaca.
+                                                                                                                                    /// </summary>
   public void FadeOut()
     {
         ValorDeseadoPantallaNegra        = 1;
