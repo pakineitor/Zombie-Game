@@ -19,7 +19,6 @@ public class MovimientosPersonaje : MonoBehaviour
     
     public Transform       refPie;
     public Transform       ContenedorArma;
-    public Transform       ContenedorBonus;
     public Transform       mirilla;
     public Transform       ReferenciaManoArmada;
     public Transform       Refcabeza;
@@ -35,6 +34,7 @@ public class MovimientosPersonaje : MonoBehaviour
     public GameObject      BonusMunicion;
     public GameObject      MunicionInterfaz;
     public GameObject      BonusBotiquin;
+    public GameObject      InterfazZombiesMatados;
 
     public bool            isSuelo;                                                 //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                //--------Variable para ver si ha cogido o no el arma.
@@ -49,11 +49,13 @@ public class MovimientosPersonaje : MonoBehaviour
     int                    cargadorPistola      = 0;                                //--------Representa las balas que tiene el arma.
     int                    municionReserva      = 120;                              //--------Representa las balas que tiene guardadas para recargar.
     int                    capacidadCargador    = 20;                               //--------Representa los disparos que va a poder realizar.
+    int                    numeroZombiesMatados;
 
     public UnityEngine.UI.Image mascaraDaño;
     public TMPro.TextMeshProUGUI TXT_Vida;
     public TMPro.TextMeshProUGUI TXT_CargadorPistola;                               //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
     public TMPro.TextMeshProUGUI TXT_MunicionReserva;                               //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
+    public TMPro.TextMeshProUGUI TXT_ZombiesMatados;
 
     public UnityEngine.UI.Image BarraVerde;
     public UnityEngine.UI.Image telaNegra;
@@ -221,10 +223,11 @@ public class MovimientosPersonaje : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("PistolaCalle"))
         {
-            isArmado                     = true;
+            isArmado                            = true;
             Destroy(collision.gameObject);
-            ContenedorArma.gameObject.SetActive(true);
-            MunicionInterfaz.gameObject.SetActive(true);
+            ContenedorArma.                     gameObject.SetActive(true);
+            MunicionInterfaz.                   gameObject.SetActive(true);
+            InterfazZombiesMatados.             gameObject.SetActive(true);
         }
 
         if (collision.gameObject.CompareTag("BonusMunicion"))
@@ -308,6 +311,8 @@ public class MovimientosPersonaje : MonoBehaviour
 
             if (impacto.collider.gameObject.CompareTag("Cabeza"))
             {
+                numeroZombiesMatados++;
+                Instantiate(particulasSangre, impacto.point, Quaternion.identity);
                 impacto.transform.GetComponent<Zombies>().ZombieMuere();
             }
         }
@@ -367,10 +372,11 @@ public class MovimientosPersonaje : MonoBehaviour
 
         Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
        
-        if (energiaActual ==0) {
+        if (energiaActual <=0) {
             BarraVerde.fillAmount          = 0.0f;
             animacion.SetTrigger("Muere");
             isMuerto = true;
+            
       
         }
         else {
@@ -462,7 +468,7 @@ public class MovimientosPersonaje : MonoBehaviour
         animacion.SetFloat( "MoveX"  ,  Mathf.Abs(movX));                                                                        //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
         animacion.SetBool(  "isPiso" ,  isSuelo);
 
-        if (isBonusMunicionCogido == true) municionReserva = 120;                                                                        //--------Actualizo el texto de la munición de reserva.
+        if (isBonusMunicionCogido == true) municionReserva = 120;                                                                //--------Actualizo el texto de la munición de reserva.
                                                                                                                                  //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
 
         if (Input.GetButtonDown("Jump") && isSuelo)                                                                              //--------Si está en el sueloy pulso saltar:
@@ -533,6 +539,7 @@ public class MovimientosPersonaje : MonoBehaviour
         }
 
         isMuerto = false;
+        TXT_ZombiesMatados.text = numeroZombiesMatados.ToString();
     }
 
    
