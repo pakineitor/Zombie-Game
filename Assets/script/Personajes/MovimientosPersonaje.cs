@@ -35,6 +35,9 @@ public class MovimientosPersonaje : MonoBehaviour
     public GameObject      MunicionInterfaz;
     public GameObject      BonusBotiquin;
     public GameObject      InterfazZombiesMatados;
+    public GameObject      Corazon1;
+    public GameObject      Corazon2;
+    public GameObject      Corazon3;
 
     public bool            isSuelo;                                                 //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                //--------Variable para ver si ha cogido o no el arma.
@@ -44,12 +47,14 @@ public class MovimientosPersonaje : MonoBehaviour
     bool                   isMuerto             = false;
     bool                   isBonusBotiquinCogido = false;
 
-    int                    energiaMaxima        = 4;                                //--------Representa la vida del personaje.
-    int                    energiaActual        = 0;                                //--------Representa la vida actual que tiene el personaje en tiempo real.
-    int                    cargadorPistola      = 0;                                //--------Representa las balas que tiene el arma.
-    int                    municionReserva      = 120;                              //--------Representa las balas que tiene guardadas para recargar.
-    int                    capacidadCargador    = 20;                               //--------Representa los disparos que va a poder realizar.
+    int                    energiaMaxima         = 4;                                //--------Representa la vida del personaje.
+    int                    energiaActual         = 0;                                //--------Representa la vida actual que tiene el personaje en tiempo real.
+    int                    cargadorPistola       = 0;                                //--------Representa las balas que tiene el arma.
+    int                    municionReserva       = 120;                              //--------Representa las balas que tiene guardadas para recargar.
+    int                    capacidadCargador     = 20;                               //--------Representa los disparos que va a poder realizar.
     int                    numeroZombiesMatados;
+    int                    contadorDeMuertes     =0;
+    int                    hermanoContadorDeMuertes = 0; //Variable que va a compararse con contadorDeMuertes.
 
     public UnityEngine.UI.Image mascaraDaño;
     public TMPro.TextMeshProUGUI TXT_Vida;
@@ -63,6 +68,23 @@ public class MovimientosPersonaje : MonoBehaviour
 
 
     //---------------------------------------------------------------------------- INICIO SETs -----------------------------------------------------------------------------------------------------------
+
+
+
+
+    public void setHermanoContadorDeMuertes(int numero)
+    {
+        hermanoContadorDeMuertes=numero;
+    }
+
+
+    /// <summary>
+    /// Método que sumará uno a la variable contadora de muertes.
+    /// </summary>
+    void setContadorMuertes()
+    {
+        contadorDeMuertes++;
+    }
 
 
                                                                                               /// <summary>
@@ -176,14 +198,23 @@ public class MovimientosPersonaje : MonoBehaviour
         return this.isRecargado;
     }
 
-    /// <summary>
-    /// Función que va a ejecutar el salto.
-    /// </summary>
+    
+    public int getContadorDeMuertes()
+    {
+        return contadorDeMuertes;
+    }
 
+
+    public int getHermanoContadorDeMuertes()
+    {
+        return hermanoContadorDeMuertes;
+    }
     //**************************************************************************** FIN GET **********************************************************************************************************
 
 
-
+    /// <summary>
+    /// Función que va a ejecutar el salto.
+    /// </summary>
 
     public void Saltar()
     { 
@@ -376,8 +407,9 @@ public class MovimientosPersonaje : MonoBehaviour
             BarraVerde.fillAmount          = 0.0f;
             animacion.SetTrigger("Muere");
             isMuerto = true;
-            
-      
+            setContadorMuertes(); //Método que va a sumar 1 cada vez que muera el personaje.
+
+            ActualizarNumeroVidas(); //ñññprobar con if(muertes!=hermanomuertes) llama a esta función pero en el update.
         }
         else {
             
@@ -437,8 +469,20 @@ public class MovimientosPersonaje : MonoBehaviour
         
     }
 
+                                                                                                                                    /// <summary>
+                                                                                                                                    /// Método que va a actualizar la cantidad de corazones que aparecen en pantalla.
+                                                                                                                                    /// </summary>
+    public void ActualizarNumeroVidas()
+    {
+        if (getContadorDeMuertes() != getHermanoContadorDeMuertes()) //Condición que comprueba si el personaje ha muerto una vez o no para actualizar la variable hermanoContadorDeMuertes para saber si quito una vida o no.
+        {
+            if (getContadorDeMuertes() == 1) Destroy(Corazon1);
+            if (getContadorDeMuertes() == 2) Destroy(Corazon2);
+            if (getContadorDeMuertes() == 3) Destroy(Corazon3);
+            setHermanoContadorDeMuertes(getContadorDeMuertes()); //Actualizo la variable para así inidcarle al programa si muere o no el personaje comparando las variables de la condición.
 
-    
+        }
+    }
   
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -454,7 +498,7 @@ public class MovimientosPersonaje : MonoBehaviour
         mirilla.gameObject.SetActive(false);
         if(isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
         cargadorPistola = capacidadCargador;                                                                                     //--------Inicializo a 120 el cargador.
-
+        
 
 
     }
@@ -540,6 +584,7 @@ public class MovimientosPersonaje : MonoBehaviour
 
         isMuerto = false;
         TXT_ZombiesMatados.text = numeroZombiesMatados.ToString();
+
     }
 
    

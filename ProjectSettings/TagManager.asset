@@ -11,6 +11,9 @@ TagManager:
   - SonidoOf
   - BonusMunicion
   - Botiquin
+  - Corazon1
+  - Corazon2
+  - Corazon3
   layers:
   - Default
   - TransparentFX
