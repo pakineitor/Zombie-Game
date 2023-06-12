@@ -72,7 +72,7 @@ public class MovimientosPersonaje : MonoBehaviour
 
 
 
-    public void setHermanoContadorDeMuertes(int numero)
+    public void setHermanoContadorDeMuertes(int numero)  
     {
         hermanoContadorDeMuertes=numero;
     }
@@ -84,6 +84,7 @@ public class MovimientosPersonaje : MonoBehaviour
     void setContadorMuertes()
     {
         contadorDeMuertes++;
+        return;
     }
 
 
@@ -407,9 +408,7 @@ public class MovimientosPersonaje : MonoBehaviour
             BarraVerde.fillAmount          = 0.0f;
             animacion.SetTrigger("Muere");
             isMuerto = true;
-            setContadorMuertes(); //Método que va a sumar 1 cada vez que muera el personaje.
-
-            ActualizarNumeroVidas(); //ñññprobar con if(muertes!=hermanomuertes) llama a esta función pero en el update.
+           
         }
         else {
             
@@ -438,6 +437,7 @@ public class MovimientosPersonaje : MonoBehaviour
             mascaraDaño.color             = new Color(1, 1, 1, transparencia);
            
         }
+       
     }
 
                                                                                                                                     /// <summary>
@@ -454,6 +454,7 @@ public class MovimientosPersonaje : MonoBehaviour
     public void FadeIn()
     {
         ValorDeseadoPantallaNegra        = 0;
+        
     }
 
 
@@ -465,8 +466,6 @@ public class MovimientosPersonaje : MonoBehaviour
             telaNegra.color              = new Color(0, 0, 0, ValorAlpha);
             if (ValorAlpha > 0.9f && ValorDeseadoPantallaNegra == 1) SceneManager.LoadScene("Nivel1");
         }
-
-        
     }
 
                                                                                                                                     /// <summary>
@@ -474,13 +473,14 @@ public class MovimientosPersonaje : MonoBehaviour
                                                                                                                                     /// </summary>
     public void ActualizarNumeroVidas()
     {
+
         if (getContadorDeMuertes() != getHermanoContadorDeMuertes()) //Condición que comprueba si el personaje ha muerto una vez o no para actualizar la variable hermanoContadorDeMuertes para saber si quito una vida o no.
         {
-            if (getContadorDeMuertes() == 1) Destroy(Corazon1);
-            if (getContadorDeMuertes() == 2) Destroy(Corazon2);
-            if (getContadorDeMuertes() == 3) Destroy(Corazon3);
+            Debug.Log("Entro al if de ActualizarNumeroVidas");
+            if (getContadorDeMuertes() == 1) Destroy(Corazon1); //Oculto el objeto o imagen en este caso.
+            if (getContadorDeMuertes() == 2) Destroy(Corazon2); //Oculto objeto o imagen en este caso.
+            if (getContadorDeMuertes() == 3) Destroy(Corazon3); //Oculto objeto o imagen en este caso. 
             setHermanoContadorDeMuertes(getContadorDeMuertes()); //Actualizo la variable para así inidcarle al programa si muere o no el personaje comparando las variables de la condición.
-
         }
     }
   
@@ -584,7 +584,7 @@ public class MovimientosPersonaje : MonoBehaviour
 
         isMuerto = false;
         TXT_ZombiesMatados.text = numeroZombiesMatados.ToString();
-
+       
     }
 
    
