@@ -21,7 +21,18 @@ public static class inforPartida
                static bool   BonusBotiquinCogido;
                static bool   BonusMunicionMaximaCogido;
                static bool   isCargado;
+               static bool   isPartidaGuardada = false;
 
+       public static GameObject Corazon1;
+       public static GameObject Corazon2;
+       public static GameObject Corazon3;
+
+
+
+        public static void setPartidaGuardada(bool yes)
+        {
+            isPartidaGuardada = yes;
+        }
 
 
         public static void setNumeroZombiesMatados(int n)
@@ -115,6 +126,12 @@ public static class inforPartida
         public static int getNumeroZombiesMatados()
         {
             return numeroZombiesMatados;
+        }
+
+
+        public static bool getPartidaGuardada()
+        {
+            return isPartidaGuardada;
         }
 
     }

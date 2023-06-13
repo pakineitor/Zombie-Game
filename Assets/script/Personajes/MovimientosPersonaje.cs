@@ -487,9 +487,9 @@ public class MovimientosPersonaje : MonoBehaviour
         if (getContadorDeMuertes() != getHermanoContadorDeMuertes()) //Condición que comprueba si el personaje ha muerto una vez o no para actualizar la variable hermanoContadorDeMuertes para saber si quito una vida o no.
         {
             Debug.Log("Entro al if de ActualizarNumeroVidas");
-            if (getContadorDeMuertes() == 1) Destroy(Corazon1); //Oculto el objeto o imagen en este caso.
-            if (getContadorDeMuertes() == 2) Destroy(Corazon2); //Oculto objeto o imagen en este caso.
-            if (getContadorDeMuertes() == 3) Destroy(Corazon3); //Oculto objeto o imagen en este caso. 
+            if (getContadorDeMuertes() == 1) Corazon1.SetActive(false); //Oculto el objeto o imagen en este caso.
+            if (getContadorDeMuertes() == 2) Corazon2.SetActive(false); //Oculto objeto o imagen en este caso.
+            if (getContadorDeMuertes() == 3) Corazon3.SetActive(false); //Oculto objeto o imagen en este caso. 
             setHermanoContadorDeMuertes(getContadorDeMuertes()); //Actualizo la variable para así inidcarle al programa si muere o no el personaje comparando las variables de la condición.
         }
     }
@@ -500,7 +500,7 @@ public class MovimientosPersonaje : MonoBehaviour
     /// </summary>
     public void GuardarPartida()
     {
-        inforPartida.Pakineitor.posicion = transform.position;                                      //ñññ pendiente de hacer los set y get que faltan.
+        inforPartida.Pakineitor.setPartidaGuardada(true);
         inforPartida.Pakineitor.setMunicionCargador(this.cargadorPistola);
         inforPartida.Pakineitor.setMunicionReserva(this.municionReserva);
         inforPartida.Pakineitor.setEnergiaActual(this.energiaActual);
@@ -510,12 +510,14 @@ public class MovimientosPersonaje : MonoBehaviour
         inforPartida.Pakineitor.IsBonusMunicionMaximaCogido(this.isBonusMunicionCogido);
         inforPartida.Pakineitor.setCargado(getRecargado());
         inforPartida.Pakineitor.setNumeroZombiesMatados(getNumeroZombiesMatados());
-        inforPartida.Pakineitor.mascaraDaño = this.mascaraDaño;
-        inforPartida.Pakineitor.BarraVerde = this.BarraVerde;
+        inforPartida.Pakineitor.posicion        = transform.position;                                      //ñññ pendiente de hacer los set y get que faltan.
+        inforPartida.Pakineitor.mascaraDaño     = this.mascaraDaño;
+        inforPartida.Pakineitor.BarraVerde      = this.BarraVerde;
+        inforPartida.Pakineitor.Corazon1        = this.Corazon1;
     }
 
     /// <summary>
-    /// Método encargado de extraer la información guardada de la parida.
+    /// Método encargado de extraer la información guardada de la partida.
     /// </summary>
     public void CargarPartida()
     {
@@ -526,13 +528,11 @@ public class MovimientosPersonaje : MonoBehaviour
         energiaActual                       = inforPartida.Pakineitor.getEnergiaActual();
         isArmado                            = inforPartida.Pakineitor.getIsArmado();
         numeroZombiesMatados                = inforPartida.Pakineitor.getNumeroZombiesMatados();
-        this.mascaraDaño.fillAmount         = inforPartida.Pakineitor.mascaraDaño.fillAmount;
-        this.BarraVerde.fillAmount          = inforPartida.Pakineitor.BarraVerde.fillAmount;
-
+        this.mascaraDaño                    = inforPartida.Pakineitor.mascaraDaño;
+        this.BarraVerde                     = inforPartida.Pakineitor.BarraVerde;
         setBonusBotiquinCogido(inforPartida.Pakineitor.getIsBonusBotiquinCogido());
         setIsBonusMunicionCogido(inforPartida.Pakineitor.getIsBonusMunicionMaximaCogido());
         setCargado(inforPartida.Pakineitor.getCargado());
-
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -549,8 +549,8 @@ public class MovimientosPersonaje : MonoBehaviour
         mirilla.gameObject.SetActive(false);
         if(isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
         cargadorPistola = capacidadCargador;                                                                                     //--------Inicializo a 120 el cargador.
-        
 
+        if (inforPartida.Pakineitor.getPartidaGuardada() == true) CargarPartida();                                               //--------Comprobamos si hemos guardado una sola vez la partida para cargarla.
 
     }
 
@@ -638,8 +638,9 @@ public class MovimientosPersonaje : MonoBehaviour
 
         isMuerto = false;
         TXT_ZombiesMatados.text = numeroZombiesMatados.ToString();
-        
+        ActualizarNumeroVidas();
+
     }
 
-   
+
 }
