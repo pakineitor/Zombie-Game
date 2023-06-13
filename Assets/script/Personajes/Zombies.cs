@@ -26,11 +26,11 @@ public class Zombies : MonoBehaviour
     tipoComportamientoZombie EstadoZombie                                   = tipoComportamientoZombie.pasivo;
 
     bool                isMordida                                           = false;
-    bool isSuelo;
+    bool                isSuelo;
 
     public void ZombieMuere()
     {
-       
+        //Reproducir algún sonido de que muere.
        Destroy(gameObject);
     }
 
@@ -119,6 +119,9 @@ public class Zombies : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void MordidaValidaInicio() { 
         isMordida = true; 
     }
@@ -126,6 +129,7 @@ public class Zombies : MonoBehaviour
         isMordida = false; 
     }
 
+   
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

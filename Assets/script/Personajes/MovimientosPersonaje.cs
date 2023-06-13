@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
+
 public class MovimientosPersonaje : MonoBehaviour
 {
 
@@ -52,8 +53,8 @@ public class MovimientosPersonaje : MonoBehaviour
     int                    cargadorPistola       = 0;                                //--------Representa las balas que tiene el arma.
     int                    municionReserva       = 120;                              //--------Representa las balas que tiene guardadas para recargar.
     int                    capacidadCargador     = 20;                               //--------Representa los disparos que va a poder realizar.
-    int                    numeroZombiesMatados;
-    int                    contadorDeMuertes     =0;
+    int                    numeroZombiesMatados  = 0;
+    int                    contadorDeMuertes     = 0;
     int                    hermanoContadorDeMuertes = 0; //Variable que va a compararse con contadorDeMuertes.
 
     public UnityEngine.UI.Image mascaraDaño;
@@ -81,10 +82,10 @@ public class MovimientosPersonaje : MonoBehaviour
     /// <summary>
     /// Método que sumará uno a la variable contadora de muertes.
     /// </summary>
-    void setContadorMuertes()
+    void AutoIncrementarContadorMuertes()
     {
         contadorDeMuertes++;
-        return;
+      
     }
 
 
@@ -152,7 +153,7 @@ public class MovimientosPersonaje : MonoBehaviour
     /// 
     /// </summary>
     /// <param name="recargado"></param>
-    void setCargado(bool recargado)
+    public void setCargado(bool recargado)
     {
         this.isRecargado = recargado;
     }
@@ -210,6 +211,14 @@ public class MovimientosPersonaje : MonoBehaviour
     {
         return hermanoContadorDeMuertes;
     }
+
+
+    public int getNumeroZombiesMatados()
+    {
+        return numeroZombiesMatados;
+    }
+        
+
     //**************************************************************************** FIN GET **********************************************************************************************************
 
 
@@ -408,7 +417,8 @@ public class MovimientosPersonaje : MonoBehaviour
             BarraVerde.fillAmount          = 0.0f;
             animacion.SetTrigger("Muere");
             isMuerto = true;
-           
+           AutoIncrementarContadorMuertes();
+           ActualizarNumeroVidas();
         }
         else {
             
@@ -483,7 +493,48 @@ public class MovimientosPersonaje : MonoBehaviour
             setHermanoContadorDeMuertes(getContadorDeMuertes()); //Actualizo la variable para así inidcarle al programa si muere o no el personaje comparando las variables de la condición.
         }
     }
-  
+
+
+    /// <summary>
+    /// Método que gracias a una clase estática va a guardar la información actual de la partida.
+    /// </summary>
+    public void GuardarPartida()
+    {
+        inforPartida.Pakineitor.posicion = transform.position;                                      //ñññ pendiente de hacer los set y get que faltan.
+        inforPartida.Pakineitor.setMunicionCargador(this.cargadorPistola);
+        inforPartida.Pakineitor.setMunicionReserva(this.municionReserva);
+        inforPartida.Pakineitor.setEnergiaActual(this.energiaActual);
+        inforPartida.Pakineitor.setContadorMuertes(getContadorDeMuertes());
+        inforPartida.Pakineitor.setIsArmado(this.isArmado);
+        inforPartida.Pakineitor.IsBonusBotiquinCogido(this.getIsBonusBotiquinCogido());
+        inforPartida.Pakineitor.IsBonusMunicionMaximaCogido(this.isBonusMunicionCogido);
+        inforPartida.Pakineitor.setCargado(getRecargado());
+        inforPartida.Pakineitor.setNumeroZombiesMatados(getNumeroZombiesMatados());
+        inforPartida.Pakineitor.mascaraDaño = this.mascaraDaño;
+        inforPartida.Pakineitor.BarraVerde = this.BarraVerde;
+    }
+
+    /// <summary>
+    /// Método encargado de extraer la información guardada de la parida.
+    /// </summary>
+    public void CargarPartida()
+    {
+        transform.position                  = inforPartida.Pakineitor.posicion;
+        contadorDeMuertes                   = inforPartida.Pakineitor.getContadorMuertes();
+        cargadorPistola                     = inforPartida.Pakineitor.getMunicionCargador();
+        municionReserva                     = inforPartida.Pakineitor.getMunicionReserva();
+        energiaActual                       = inforPartida.Pakineitor.getEnergiaActual();
+        isArmado                            = inforPartida.Pakineitor.getIsArmado();
+        numeroZombiesMatados                = inforPartida.Pakineitor.getNumeroZombiesMatados();
+        this.mascaraDaño.fillAmount         = inforPartida.Pakineitor.mascaraDaño.fillAmount;
+        this.BarraVerde.fillAmount          = inforPartida.Pakineitor.BarraVerde.fillAmount;
+
+        setBonusBotiquinCogido(inforPartida.Pakineitor.getIsBonusBotiquinCogido());
+        setIsBonusMunicionCogido(inforPartida.Pakineitor.getIsBonusMunicionMaximaCogido());
+        setCargado(inforPartida.Pakineitor.getCargado());
+
+    }
+
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -511,6 +562,9 @@ public class MovimientosPersonaje : MonoBehaviour
         isSuelo                           = Physics2D.OverlapCircle(refPie.position, 1f, 1 << 8);                                //--------En esta sentencia de código, guardamos un bool comparando que si hay algo en el área formada por el radio de refPie, que sea true o false.
         animacion.SetFloat( "MoveX"  ,  Mathf.Abs(movX));                                                                        //--------Establecemos un float en valor absoluto para que cuando e mueva en sentido negativo, no haya errores pero Unity sepa disntinguirlos.
         animacion.SetBool(  "isPiso" ,  isSuelo);
+
+        if (Input.GetKeyDown(KeyCode.G)) GuardarPartida();
+        if (Input.GetKeyDown(KeyCode.C)) CargarPartida();
 
         if (isBonusMunicionCogido == true) municionReserva = 120;                                                                //--------Actualizo el texto de la munición de reserva.
                                                                                                                                  //--------Referenciamos parámetro del animator llamado isPisom con el valor booleano guardado en la variable isSuelo.
@@ -584,7 +638,7 @@ public class MovimientosPersonaje : MonoBehaviour
 
         isMuerto = false;
         TXT_ZombiesMatados.text = numeroZombiesMatados.ToString();
-       
+        
     }
 
    

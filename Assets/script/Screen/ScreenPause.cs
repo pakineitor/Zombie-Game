@@ -30,6 +30,7 @@ public class ScreenPause : MonoBehaviour
     /// </summary>
     public void Salir(string NombreEscena)
     {
+        
         SceneManager.LoadScene(NombreEscena);
         Time.timeScale = 1;
         PausaMenu.SetActive(false);
