@@ -47,8 +47,11 @@ public class MovimientosPersonaje : MonoBehaviour
     bool                   isBonusMunicionCogido    = false;                            
     bool                   isMuerto                 = false;
     bool                   isBonusBotiquinCogido    = false;
- 
+    
 
+
+
+    int                    numeroDeVidas; //Variable que se inicializa según la dificultad por más o enos vidas.
     int                    energiaActual            = 4;                                //--------Representa la vida actual que tiene el personaje en tiempo real.
     int                    cargadorPistola          = 0;                                //--------Representa las balas que tiene el arma.
     int                    municionReserva          = 120;                              //--------Representa las balas que tiene guardadas para recargar.
@@ -56,6 +59,7 @@ public class MovimientosPersonaje : MonoBehaviour
     int                    numeroZombiesMatados     = 0;
     int                    contadorDeMuertes        = 0;
     int                    hermanoContadorDeMuertes = 0; //Variable que va a compararse con contadorDeMuertes.
+    
 
     public UnityEngine.UI.Image mascaraDaño;
     public TMPro.TextMeshProUGUI TXT_Vida;
@@ -220,6 +224,10 @@ public class MovimientosPersonaje : MonoBehaviour
         
 
     //**************************************************************************** FIN GET **********************************************************************************************************
+
+
+    
+
 
 
     /// <summary>
@@ -567,6 +575,22 @@ public class MovimientosPersonaje : MonoBehaviour
 
     }
 
+
+    public void ComprobarDificultad()
+    {
+        if (inforPartida.Pakineitor.getFacil() == true) this.energiaActual = 4;
+        if(inforPartida.Pakineitor.getMedia()  == true) this.energiaActual = 2;
+        
+        if(inforPartida.Pakineitor.getDificil()  == true)
+        {
+            this.energiaActual = 1;
+            this.velx = 15f;
+
+        }
+
+
+    }
+
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -575,7 +599,7 @@ public class MovimientosPersonaje : MonoBehaviour
     void Start()
     {
 
-        energiaActual = 4;                                                                                                       //--------Actualizo la variable de la energía actual para que me vuelva a dar 4 toques.
+        ComprobarDificultad();                                                                                                     //--------Actualizo la variable de la energía actual para que me vuelva a dar 4 toques.
         animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
         mirilla.gameObject.SetActive(false);

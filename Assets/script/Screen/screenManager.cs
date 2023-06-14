@@ -15,6 +15,10 @@ public class screenManager : MonoBehaviour
     public GameObject  PantallaValoracion;
     public Button      SonidoOn;
     public Button      SonidoOff;
+    public Button      facil;
+    public Button      media;
+    public Button      dificil;
+
     private string     inputMensaje;
     //string password = "gfnrfccettcsdiwa", correo = "pakineitor123@gmail.com";
 
@@ -89,6 +93,32 @@ public class screenManager : MonoBehaviour
     {
         PantallaValoracion.SetActive(false);
     }
+
+    //Pone 4 toques. Es la que hay por defecto.
+    public void Facil()
+    {
+        inforPartida.Pakineitor.setFacil(true);
+        inforPartida.Pakineitor.setMedia(false);
+        inforPartida.Pakineitor.setDificil(false);
+    }
+    //Si te dan 2 toques mueres.
+    public void Media()
+    {
+        inforPartida.Pakineitor.setFacil(false);
+        inforPartida.Pakineitor.setMedia(true);
+        inforPartida.Pakineitor.setDificil(false);
+    }
+    //1 toque y mueres.
+    public void Dificil()
+    {
+        inforPartida.Pakineitor.setFacil(false);
+        inforPartida.Pakineitor.setMedia(false);
+        inforPartida.Pakineitor.setDificil(true);
+    }
+
+    
+
+
 
     public void EnviarValoracion()
     {

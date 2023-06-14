@@ -22,6 +22,9 @@ public static class inforPartida
                static bool   BonusMunicionMaximaCogido;
                static bool   isCargado;
                static bool   isPartidaGuardada = false;
+               static bool facil = false;
+               static bool media = false;
+               static bool dificil = false;
 
        public static GameObject Corazon1;
        public static GameObject Corazon2;
@@ -141,6 +144,37 @@ public static class inforPartida
             Corazon2 = corazon2;
             Corazon3 = corazon3;
         }
+
+        public static void setFacil(bool dificultad)
+        {
+            facil = dificultad;
+        }
+
+        public static void setMedia(bool dificultad)
+        {
+            media = dificultad;
+        }
+
+        public static void setDificil(bool dificultad)
+        {
+            dificil = dificultad;
+        }
+
+        public static bool getFacil()
+        {
+            return facil;
+        }
+
+        public static bool getMedia()
+        {
+            return media;
+        }
+
+        public static bool getDificil()
+        {
+            return dificil;
+        }
+
 
     }
 
