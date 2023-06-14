@@ -48,8 +48,7 @@ public class MovimientosPersonaje : MonoBehaviour
     bool                   isMuerto             = false;
     bool                   isBonusBotiquinCogido = false;
 
-    int                    energiaMaxima         = 4;                                //--------Representa la vida del personaje.
-    int                    energiaActual         = 0;                                //--------Representa la vida actual que tiene el personaje en tiempo real.
+    int                    energiaActual         = 4;                                //--------Representa la vida actual que tiene el personaje en tiempo real.
     int                    cargadorPistola       = 0;                                //--------Representa las balas que tiene el arma.
     int                    municionReserva       = 120;                              //--------Representa las balas que tiene guardadas para recargar.
     int                    capacidadCargador     = 20;                               //--------Representa los disparos que va a poder realizar.
@@ -408,12 +407,12 @@ public class MovimientosPersonaje : MonoBehaviour
                                                                                                                                    /// <param name="posicion"></param>
     public void RecibirDaño(Vector2 posicion)
     {
-        energiaActual                      = energiaMaxima--;
+        energiaActual--;
         float transparencia                =0f;
 
         Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
        
-        if (energiaActual <=0) {
+        if (energiaActual ==0) {
             BarraVerde.fillAmount          = 0.0f;
             animacion.SetTrigger("Muere");
             isMuerto = true;
@@ -456,6 +455,8 @@ public class MovimientosPersonaje : MonoBehaviour
   public void FadeOut()
     {
         ValorDeseadoPantallaNegra        = 1;
+        energiaActual = 4;
+        
     }
 
     /// <summary>
@@ -465,6 +466,7 @@ public class MovimientosPersonaje : MonoBehaviour
     {
         ValorDeseadoPantallaNegra        = 0;
         
+
     }
 
 
@@ -474,7 +476,10 @@ public class MovimientosPersonaje : MonoBehaviour
         if(energiaActual == 0)
         {
             telaNegra.color              = new Color(0, 0, 0, ValorAlpha);
+
             if (ValorAlpha > 0.9f && ValorDeseadoPantallaNegra == 1) SceneManager.LoadScene("Nivel1");
+
+
         }
     }
 
@@ -510,10 +515,23 @@ public class MovimientosPersonaje : MonoBehaviour
         inforPartida.Pakineitor.IsBonusMunicionMaximaCogido(this.isBonusMunicionCogido);
         inforPartida.Pakineitor.setCargado(getRecargado());
         inforPartida.Pakineitor.setNumeroZombiesMatados(getNumeroZombiesMatados());
-        inforPartida.Pakineitor.posicion        = transform.position;                                      //ñññ pendiente de hacer los set y get que faltan.
+        inforPartida.Pakineitor.posicion        = transform.position;                                       //ñññ pendiente de hacer los set y get que faltan.
         inforPartida.Pakineitor.mascaraDaño     = this.mascaraDaño;
         inforPartida.Pakineitor.BarraVerde      = this.BarraVerde;
-        inforPartida.Pakineitor.Corazon1        = this.Corazon1;
+        
+        
+        inforPartida.infoPaqueteCorazones.Clear();                                                          //Limpiamos la lista para que no siga aumentando cada vez que guarde la partida.
+        Transform todosLosPaquetes              = GameObject.Find("Corazones").transform;                   //Referenciamos el objeto de escena llamado Corazones para poder acceder a sus hijos que son los corazones
+                                                                                                    // Por cada item comparamos si ese objeto está activado o no.
+        foreach (Transform paquete in todosLosPaquetes)
+        {
+            inforPartida.TipoInfoCorazones itempaqueteCorazon = new inforPartida.TipoInfoCorazones();
+            itempaqueteCorazon.Activado = paquete.gameObject.activeSelf;
+            inforPartida.infoPaqueteCorazones.Add(itempaqueteCorazon);
+        }
+            
+        
+
     }
 
     /// <summary>
@@ -528,11 +546,30 @@ public class MovimientosPersonaje : MonoBehaviour
         energiaActual                       = inforPartida.Pakineitor.getEnergiaActual();
         isArmado                            = inforPartida.Pakineitor.getIsArmado();
         numeroZombiesMatados                = inforPartida.Pakineitor.getNumeroZombiesMatados();
-        this.mascaraDaño                    = inforPartida.Pakineitor.mascaraDaño;
-        this.BarraVerde                     = inforPartida.Pakineitor.BarraVerde;
+        mascaraDaño                    = inforPartida.Pakineitor.mascaraDaño;
+        BarraVerde                     = inforPartida.Pakineitor.BarraVerde;
+        contadorDeMuertes              = inforPartida.Pakineitor.getContadorMuertes();
+
+        
+
+
         setBonusBotiquinCogido(inforPartida.Pakineitor.getIsBonusBotiquinCogido());
         setIsBonusMunicionCogido(inforPartida.Pakineitor.getIsBonusMunicionMaximaCogido());
         setCargado(inforPartida.Pakineitor.getCargado());
+
+        //Cargar el estado del vector:
+        Transform todosLosPaquetes = GameObject.Find("Corazones").transform;
+        int i = 0;
+        foreach (Transform paquete in todosLosPaquetes)
+        {
+            inforPartida.TipoInfoCorazones itempaqueteCorazon = new inforPartida.TipoInfoCorazones();
+            paquete.gameObject.SetActive(inforPartida.infoPaqueteCorazones[i].Activado);
+            inforPartida.infoPaqueteCorazones.Add(itempaqueteCorazon);
+            i++;
+        }
+
+
+
     }
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -541,9 +578,9 @@ public class MovimientosPersonaje : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    { 
+    {
+
         
-        energiaActual                     = energiaMaxima;
         animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
         mirilla.gameObject.SetActive(false);
@@ -638,7 +675,7 @@ public class MovimientosPersonaje : MonoBehaviour
 
         isMuerto = false;
         TXT_ZombiesMatados.text = numeroZombiesMatados.ToString();
-        ActualizarNumeroVidas();
+        
 
     }
 

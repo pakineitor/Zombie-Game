@@ -134,5 +134,24 @@ public static class inforPartida
             return isPartidaGuardada;
         }
 
+        
+        public static void setCorazon(GameObject corazon1, GameObject corazon2, GameObject corazon3)
+        {
+            Corazon1 = corazon1;
+            Corazon2 = corazon2;
+            Corazon3 = corazon3;
+        }
+
     }
+
+
+    /// <summary>
+    /// Clase para los corazones.
+    /// </summary>
+    public class TipoInfoCorazones
+    {
+        public bool Activado;
+    }
+
+    public static List<TipoInfoCorazones> infoPaqueteCorazones = new List<TipoInfoCorazones>();
 }
