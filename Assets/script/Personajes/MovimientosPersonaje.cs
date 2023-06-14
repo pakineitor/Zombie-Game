@@ -62,7 +62,8 @@ public class MovimientosPersonaje : MonoBehaviour
     
 
     public UnityEngine.UI.Image mascaraDaño;
-    public TMPro.TextMeshProUGUI TXT_Vida;
+    public TMPro.TextMeshProUGUI TXT_Vida_Actual;
+    public TMPro.TextMeshProUGUI TXT_Vida_Máxima;
     public TMPro.TextMeshProUGUI TXT_CargadorPistola;                               //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
     public TMPro.TextMeshProUGUI TXT_MunicionReserva;                               //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
     public TMPro.TextMeshProUGUI TXT_ZombiesMatados;
@@ -449,7 +450,7 @@ public class MovimientosPersonaje : MonoBehaviour
                 BarraVerde.fillAmount     = 0.036f;
             }
 
-            TXT_Vida.text = energiaActual.ToString();
+            TXT_Vida_Actual.text = energiaActual.ToString();
 
             Debug.Log("Energía actual: " + energiaActual);
             mascaraDaño.color             = new Color(1, 1, 1, transparencia);
@@ -525,6 +526,7 @@ public class MovimientosPersonaje : MonoBehaviour
         inforPartida.Pakineitor.BarraVerde      = this.BarraVerde;
         
         
+        
         inforPartida.infoPaqueteCorazones.Clear();                                                          //Limpiamos la lista para que no siga aumentando cada vez que guarde la partida.
         Transform todosLosPaquetes              = GameObject.Find("Corazones").transform;                   //Referenciamos el objeto de escena llamado Corazones para poder acceder a sus hijos que son los corazones
                                                                                                     // Por cada item comparamos si ese objeto está activado o no.
@@ -551,9 +553,9 @@ public class MovimientosPersonaje : MonoBehaviour
         energiaActual                       = inforPartida.Pakineitor.getEnergiaActual();
         isArmado                            = inforPartida.Pakineitor.getIsArmado();
         numeroZombiesMatados                = inforPartida.Pakineitor.getNumeroZombiesMatados();
-        mascaraDaño                    = inforPartida.Pakineitor.mascaraDaño;
-        BarraVerde                     = inforPartida.Pakineitor.BarraVerde;
-        contadorDeMuertes              = inforPartida.Pakineitor.getContadorMuertes();
+        mascaraDaño                         = inforPartida.Pakineitor.mascaraDaño;
+        BarraVerde                          = inforPartida.Pakineitor.BarraVerde;
+        contadorDeMuertes                   = inforPartida.Pakineitor.getContadorMuertes();
 
     
         setBonusBotiquinCogido(inforPartida.Pakineitor.getIsBonusBotiquinCogido());
@@ -578,12 +580,27 @@ public class MovimientosPersonaje : MonoBehaviour
 
     public void ComprobarDificultad()
     {
-        if (inforPartida.Pakineitor.getFacil() == true) this.energiaActual = 4;
-        if(inforPartida.Pakineitor.getMedia()  == true) this.energiaActual = 2;
+        if (inforPartida.Pakineitor.getFacil() == true)
+        {
+            this.energiaActual = 4;
+            this.TXT_Vida_Máxima.text = this.energiaActual.ToString();
+            this.TXT_Vida_Actual.text = this.energiaActual.ToString();
+            
+        }
+        
+        if (inforPartida.Pakineitor.getMedia() == true)
+        {
+            this.energiaActual = 2;
+            this.TXT_Vida_Máxima.text = this.energiaActual.ToString();
+            this.TXT_Vida_Actual.text = this.energiaActual.ToString();
+        }
+    
         
         if(inforPartida.Pakineitor.getDificil()  == true)
         {
             this.energiaActual = 1;
+            this.TXT_Vida_Máxima.text = this.energiaActual.ToString();
+            this.TXT_Vida_Actual.text = this.energiaActual.ToString();
             this.velx = 15f;
 
         }

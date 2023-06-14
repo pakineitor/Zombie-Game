@@ -22,7 +22,7 @@ public static class inforPartida
                static bool   BonusMunicionMaximaCogido;
                static bool   isCargado;
                static bool   isPartidaGuardada = false;
-               static bool facil = false;
+               static bool facil = true; //Default.
                static bool media = false;
                static bool dificil = false;
 

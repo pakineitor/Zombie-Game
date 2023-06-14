@@ -3652,7 +3652,8 @@ MonoBehaviour:
   Corazon3: {fileID: 2009604390}
   isSuelo: 0
   "mascaraDa\xF1o": {fileID: 852254201}
-  TXT_Vida: {fileID: 1725181811}
+  TXT_Vida_Actual: {fileID: 1725181811}
+  "TXT_Vida_M\xE1xima": {fileID: 1772917550}
   TXT_CargadorPistola: {fileID: 1791668080}
   TXT_MunicionReserva: {fileID: 1536058653}
   TXT_ZombiesMatados: {fileID: 245780787}
@@ -12458,7 +12459,7 @@ GameObject:
   - component: {fileID: 1725181812}
   - component: {fileID: 1725181811}
   m_Layer: 5
-  m_Name: Vida (TMP)
+  m_Name: TXT_VIDA_Actual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12864,7 +12865,7 @@ GameObject:
   - component: {fileID: 1772917551}
   - component: {fileID: 1772917550}
   m_Layer: 5
-  m_Name: Vida (TMP) (1)
+  m_Name: TXT_VIDA_MAXIMA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
