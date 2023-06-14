@@ -42,18 +42,19 @@ public class MovimientosPersonaje : MonoBehaviour
 
     public bool            isSuelo;                                                 //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                //--------Variable para ver si ha cogido o no el arma.
-    bool                   isRecargado          = true;                             //--------Si está recargado el cargador al máximo de su capacidad. Por defecto es que sí.
-    bool                   isDisparar           = true;                             //--------Si puedo disparar o no.
-    bool                   isBonusMunicionCogido        = false;                            
-    bool                   isMuerto             = false;
-    bool                   isBonusBotiquinCogido = false;
+    bool                   isRecargado              = true;                             //--------Si está recargado el cargador al máximo de su capacidad. Por defecto es que sí.
+    bool                   isDisparar               = true;                             //--------Si puedo disparar o no.
+    bool                   isBonusMunicionCogido    = false;                            
+    bool                   isMuerto                 = false;
+    bool                   isBonusBotiquinCogido    = false;
+ 
 
-    int                    energiaActual         = 4;                                //--------Representa la vida actual que tiene el personaje en tiempo real.
-    int                    cargadorPistola       = 0;                                //--------Representa las balas que tiene el arma.
-    int                    municionReserva       = 120;                              //--------Representa las balas que tiene guardadas para recargar.
-    int                    capacidadCargador     = 20;                               //--------Representa los disparos que va a poder realizar.
-    int                    numeroZombiesMatados  = 0;
-    int                    contadorDeMuertes     = 0;
+    int                    energiaActual            = 4;                                //--------Representa la vida actual que tiene el personaje en tiempo real.
+    int                    cargadorPistola          = 0;                                //--------Representa las balas que tiene el arma.
+    int                    municionReserva          = 120;                              //--------Representa las balas que tiene guardadas para recargar.
+    int                    capacidadCargador        = 20;                               //--------Representa los disparos que va a poder realizar.
+    int                    numeroZombiesMatados     = 0;
+    int                    contadorDeMuertes        = 0;
     int                    hermanoContadorDeMuertes = 0; //Variable que va a compararse con contadorDeMuertes.
 
     public UnityEngine.UI.Image mascaraDaño;
@@ -416,8 +417,8 @@ public class MovimientosPersonaje : MonoBehaviour
             BarraVerde.fillAmount          = 0.0f;
             animacion.SetTrigger("Muere");
             isMuerto = true;
-           AutoIncrementarContadorMuertes();
-           ActualizarNumeroVidas();
+            AutoIncrementarContadorMuertes();
+           
         }
         else {
             
@@ -454,9 +455,9 @@ public class MovimientosPersonaje : MonoBehaviour
                                                                                                                                     /// </summary>
   public void FadeOut()
     {
-        ValorDeseadoPantallaNegra        = 1;
-        energiaActual = 4;
         
+        ValorDeseadoPantallaNegra = 1;
+
     }
 
     /// <summary>
@@ -465,8 +466,6 @@ public class MovimientosPersonaje : MonoBehaviour
     public void FadeIn()
     {
         ValorDeseadoPantallaNegra        = 0;
-        
-
     }
 
 
@@ -476,10 +475,8 @@ public class MovimientosPersonaje : MonoBehaviour
         if(energiaActual == 0)
         {
             telaNegra.color              = new Color(0, 0, 0, ValorAlpha);
-
             if (ValorAlpha > 0.9f && ValorDeseadoPantallaNegra == 1) SceneManager.LoadScene("Nivel1");
-
-
+            
         }
     }
 
@@ -550,9 +547,7 @@ public class MovimientosPersonaje : MonoBehaviour
         BarraVerde                     = inforPartida.Pakineitor.BarraVerde;
         contadorDeMuertes              = inforPartida.Pakineitor.getContadorMuertes();
 
-        
-
-
+    
         setBonusBotiquinCogido(inforPartida.Pakineitor.getIsBonusBotiquinCogido());
         setIsBonusMunicionCogido(inforPartida.Pakineitor.getIsBonusMunicionMaximaCogido());
         setCargado(inforPartida.Pakineitor.getCargado());
@@ -580,7 +575,7 @@ public class MovimientosPersonaje : MonoBehaviour
     void Start()
     {
 
-        
+        energiaActual = 4;                                                                                                       //--------Actualizo la variable de la energía actual para que me vuelva a dar 4 toques.
         animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
         mirilla.gameObject.SetActive(false);
@@ -594,6 +589,7 @@ public class MovimientosPersonaje : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ActualizarNumeroVidas();
         rigidbody2.velocity               = new Vector2(velx * movX, rigidbody2.velocity.y);                                     //--------Referenciamos el componente Rigidbody2d con un vector que contiene una velocidad por un movimiento en el eje x y una coordenadas en el eje y.
         movX                              = Input.GetAxis("Horizontal");                                                         //--------Extraemos el axis horizontal para el movimiento en el eje x con -1 o 1. 
         isSuelo                           = Physics2D.OverlapCircle(refPie.position, 1f, 1 << 8);                                //--------En esta sentencia de código, guardamos un bool comparando que si hay algo en el área formada por el radio de refPie, que sea true o false.
@@ -675,7 +671,6 @@ public class MovimientosPersonaje : MonoBehaviour
 
         isMuerto = false;
         TXT_ZombiesMatados.text = numeroZombiesMatados.ToString();
-        
 
     }
 
