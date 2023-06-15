@@ -11,22 +11,22 @@ public static class inforPartida
         public static        Image mascaraDaño;
         public static        Image BarraVerde;
         public static        Vector2 posicion;
-               static int    energiaActual;
+               static int    energiaActual                      = 4; //Default
                static int    municionCargador;
                static int    municionReserva;
                static int    contadorMuertes;
                static int    numeroZombiesMatados;
-               static int    numeroMaximoVidas = 0;
-               
+               static int    numeroMaximoVidas                  = 4;
+        
 
                static bool   Armado;
                static bool   BonusBotiquinCogido;
                static bool   BonusMunicionMaximaCogido;
                static bool   isCargado;
-               static bool   isPartidaGuardada = false;
-               static bool   facil = true; //Default.
-               static bool   media = false;
-               static bool   dificil = false;
+               static bool   isPartidaGuardada                  = false;
+               static bool   facil                              = true; //Default.
+               static bool   media                              = false;
+               static bool   dificil                            = false;
       
 
         public static void setNumeroMaximoVidas(int n)
