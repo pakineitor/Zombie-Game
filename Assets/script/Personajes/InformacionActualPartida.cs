@@ -16,21 +16,23 @@ public static class inforPartida
                static int    municionReserva;
                static int    contadorMuertes;
                static int    numeroZombiesMatados;
+               static int    numeroMaximoVidas = 0;
+               
 
                static bool   Armado;
                static bool   BonusBotiquinCogido;
                static bool   BonusMunicionMaximaCogido;
                static bool   isCargado;
                static bool   isPartidaGuardada = false;
-               static bool facil = true; //Default.
-               static bool media = false;
-               static bool dificil = false;
+               static bool   facil = true; //Default.
+               static bool   media = false;
+               static bool   dificil = false;
+      
 
-       public static GameObject Corazon1;
-       public static GameObject Corazon2;
-       public static GameObject Corazon3;
-
-
+        public static void setNumeroMaximoVidas(int n)
+        {
+            numeroMaximoVidas = n;
+        }
 
         public static void setPartidaGuardada(bool yes)
         {
@@ -42,9 +44,6 @@ public static class inforPartida
         {
             numeroZombiesMatados = n;
         }
-
-
-
 
         public static void setCargado(bool yes)
         {
@@ -137,12 +136,9 @@ public static class inforPartida
             return isPartidaGuardada;
         }
 
-        
-        public static void setCorazon(GameObject corazon1, GameObject corazon2, GameObject corazon3)
+        public static int getNumeroMaximoVidas()
         {
-            Corazon1 = corazon1;
-            Corazon2 = corazon2;
-            Corazon3 = corazon3;
+            return numeroMaximoVidas;
         }
 
         public static void setFacil(bool dificultad)
@@ -174,7 +170,6 @@ public static class inforPartida
         {
             return dificil;
         }
-
 
     }
 

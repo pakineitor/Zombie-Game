@@ -10,7 +10,7 @@ public class MovimientosPersonaje : MonoBehaviour
 {
 
     Animator               animacion;
-    Rigidbody2D            rigidbody2;                                             //--------Vamos a referenciarle el Rigibody para que apunte al aplicado al personaje desde el editor. De esta manera podremos aplicarle las fuerzas necesarias para hacer real un salto.
+    Rigidbody2D            rigidbody2;                                                                  //--------Vamos a referenciarle el Rigibody para que apunte al aplicado al personaje desde el editor. De esta manera podremos aplicarle las fuerzas necesarias para hacer real un salto.
     
     public float           fuerzaSalto;
     public float           velx;
@@ -36,14 +36,11 @@ public class MovimientosPersonaje : MonoBehaviour
     public GameObject      MunicionInterfaz;
     public GameObject      BonusBotiquin;
     public GameObject      InterfazZombiesMatados;
-    public GameObject      Corazon1;
-    public GameObject      Corazon2;
-    public GameObject      Corazon3;
 
-    public bool            isSuelo;                                                 //--------Objeto que se va a referenciar al transform del arma.
-    bool                   isArmado;                                                //--------Variable para ver si ha cogido o no el arma.
-    bool                   isRecargado              = true;                             //--------Si está recargado el cargador al máximo de su capacidad. Por defecto es que sí.
-    bool                   isDisparar               = true;                             //--------Si puedo disparar o no.
+    public bool            isSuelo;                                                                     //--------Objeto que se va a referenciar al transform del arma.
+    bool                   isArmado;                                                                    //--------Variable para ver si ha cogido o no el arma.
+    bool                   isRecargado              = true;                                             //--------Si está recargado el cargador al máximo de su capacidad. Por defecto es que sí.
+    bool                   isDisparar               = true;                                             //--------Si puedo disparar o no.
     bool                   isBonusMunicionCogido    = false;                            
     bool                   isMuerto                 = false;
     bool                   isBonusBotiquinCogido    = false;
@@ -51,21 +48,21 @@ public class MovimientosPersonaje : MonoBehaviour
 
 
 
-    int                    numeroDeVidas; //Variable que se inicializa según la dificultad por más o enos vidas.
-    int                    energiaActual            = 4;                                //--------Representa la vida actual que tiene el personaje en tiempo real.
-    int                    cargadorPistola          = 0;                                //--------Representa las balas que tiene el arma.
-    int                    municionReserva          = 120;                              //--------Representa las balas que tiene guardadas para recargar.
-    int                    capacidadCargador        = 20;                               //--------Representa los disparos que va a poder realizar.
+    int                    numeroMaximoVidas        = inforPartida.Pakineitor.getNumeroMaximoVidas();   //--------Variable que se inicializa según la dificultad por más o enos vidas.
+    int                    energiaActual            = inforPartida.Pakineitor.getEnergiaActual();       //--------Representa la vida actual que tiene el personaje en tiempo real.
+    int                    cargadorPistola          = 0;                                                //--------Representa las balas que tiene el arma.
+    int                    municionReserva          = 120;                                              //--------Representa las balas que tiene guardadas para recargar.
+    int                    capacidadCargador        = 20;                                               //--------Representa los disparos que va a poder realizar.
     int                    numeroZombiesMatados     = 0;
     int                    contadorDeMuertes        = 0;
-    int                    hermanoContadorDeMuertes = 0; //Variable que va a compararse con contadorDeMuertes.
+    int                    hermanoContadorDeMuertes = 0;                                                //--------Variable que va a compararse con contadorDeMuertes.
     
 
     public UnityEngine.UI.Image mascaraDaño;
-    public TMPro.TextMeshProUGUI TXT_Vida_Actual;
+    public TMPro.TextMeshProUGUI TXT_Vida_Actual; 
     public TMPro.TextMeshProUGUI TXT_Vida_Máxima;
-    public TMPro.TextMeshProUGUI TXT_CargadorPistola;                               //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
-    public TMPro.TextMeshProUGUI TXT_MunicionReserva;                               //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
+    public TMPro.TextMeshProUGUI TXT_CargadorPistola;                                                   //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
+    public TMPro.TextMeshProUGUI TXT_MunicionReserva;                                                   //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
     public TMPro.TextMeshProUGUI TXT_ZombiesMatados;
 
     public UnityEngine.UI.Image BarraVerde;
@@ -421,42 +418,52 @@ public class MovimientosPersonaje : MonoBehaviour
         float transparencia                =0f;
 
         Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
-       
-        if (energiaActual ==0) {
-            BarraVerde.fillAmount          = 0.0f;
-            animacion.SetTrigger("Muere");
-            isMuerto = true;
-            AutoIncrementarContadorMuertes();
-           
+        
+        if (this.numeroMaximoVidas >= 0)  //Condición para comprobar si quedan oportunidades, es decir, que vida máxima no sea 0.
+        {
+            if (energiaActual == 0)
+            {
+                numeroMaximoVidas--;
+                BarraVerde.fillAmount = 0.0f;
+                animacion.SetTrigger("Muere");
+                isMuerto = true;
+                AutoIncrementarContadorMuertes();
+                this.energiaActual = inforPartida.Pakineitor.getEnergiaActual();
+            }
+            else
+            {
+
+
+                if (energiaActual == 3)
+                {
+                    transparencia = 74;
+                    BarraVerde.fillAmount = 0.856f;
+                }
+
+                if (energiaActual == 2)
+                {
+                    transparencia = 134f;
+                    BarraVerde.fillAmount = 0.355f;
+                }
+
+                if (energiaActual == 1)
+                {
+                    transparencia = 255f;
+                    BarraVerde.fillAmount = 0.036f;
+                }
+
+                TXT_Vida_Actual.text = energiaActual.ToString();
+
+                Debug.Log("Energía actual: " + energiaActual);
+                mascaraDaño.color = new Color(1, 1, 1, transparencia);
+
+            }
+        } 
+
+        if(inforPartida.Pakineitor.getNumeroMaximoVidas() == 0)
+        {
+            //muestras el game over.
         }
-        else {
-            
-            
-            if(energiaActual == 3)
-            {
-                transparencia             = 74;
-                BarraVerde.fillAmount     = 0.856f;
-            }
-
-            if(energiaActual == 2)
-            {
-                transparencia             = 134f;
-                BarraVerde.fillAmount     = 0.355f;
-            }
-
-            if (energiaActual == 1)
-            {
-                transparencia             = 255f;
-                BarraVerde.fillAmount     = 0.036f;
-            }
-
-            TXT_Vida_Actual.text = energiaActual.ToString();
-
-            Debug.Log("Energía actual: " + energiaActual);
-            mascaraDaño.color             = new Color(1, 1, 1, transparencia);
-           
-        }
-       
     }
 
                                                                                                                                     /// <summary>
@@ -483,10 +490,13 @@ public class MovimientosPersonaje : MonoBehaviour
         float ValorAlpha                 = Mathf.Lerp(telaNegra.color.a, ValorDeseadoPantallaNegra, 0.1f);
         if(energiaActual == 0)
         {
-            telaNegra.color              = new Color(0, 0, 0, ValorAlpha);
+            this.numeroMaximoVidas      = inforPartida.Pakineitor.getNumeroMaximoVidas();
+            this.energiaActual          = inforPartida.Pakineitor.getEnergiaActual();
+            telaNegra.color             = new Color(0, 0, 0, ValorAlpha);
             if (ValorAlpha > 0.9f && ValorDeseadoPantallaNegra == 1) SceneManager.LoadScene("Nivel1");
             
         }
+       
     }
 
                                                                                                                                     /// <summary>
@@ -498,9 +508,9 @@ public class MovimientosPersonaje : MonoBehaviour
         if (getContadorDeMuertes() != getHermanoContadorDeMuertes()) //Condición que comprueba si el personaje ha muerto una vez o no para actualizar la variable hermanoContadorDeMuertes para saber si quito una vida o no.
         {
             Debug.Log("Entro al if de ActualizarNumeroVidas");
-            if (getContadorDeMuertes() == 1) Corazon1.SetActive(false); //Oculto el objeto o imagen en este caso.
-            if (getContadorDeMuertes() == 2) Corazon2.SetActive(false); //Oculto objeto o imagen en este caso.
-            if (getContadorDeMuertes() == 3) Corazon3.SetActive(false); //Oculto objeto o imagen en este caso. 
+            inforPartida.Pakineitor.setNumeroMaximoVidas(numeroMaximoVidas);
+            inforPartida.Pakineitor.setEnergiaActual(inforPartida.Pakineitor.getEnergiaActual()); //Reinicio la variable.
+            this.TXT_Vida_Máxima.text = inforPartida.Pakineitor.getNumeroMaximoVidas().ToString();
             setHermanoContadorDeMuertes(getContadorDeMuertes()); //Actualizo la variable para así inidcarle al programa si muere o no el personaje comparando las variables de la condición.
         }
     }
@@ -582,24 +592,27 @@ public class MovimientosPersonaje : MonoBehaviour
     {
         if (inforPartida.Pakineitor.getFacil() == true)
         {
-            this.energiaActual = 4;
-            this.TXT_Vida_Máxima.text = this.energiaActual.ToString();
-            this.TXT_Vida_Actual.text = this.energiaActual.ToString();
+            inforPartida.Pakineitor.setNumeroMaximoVidas(4);
+            inforPartida.Pakineitor.setEnergiaActual(4);
+            this.TXT_Vida_Máxima.text = inforPartida.Pakineitor.getNumeroMaximoVidas().ToString();
+            this.TXT_Vida_Actual.text = inforPartida.Pakineitor.getEnergiaActual().ToString();
             
         }
         
         if (inforPartida.Pakineitor.getMedia() == true)
         {
-            this.energiaActual = 2;
-            this.TXT_Vida_Máxima.text = this.energiaActual.ToString();
-            this.TXT_Vida_Actual.text = this.energiaActual.ToString();
+            inforPartida.Pakineitor.setNumeroMaximoVidas(2);
+            inforPartida.Pakineitor.setEnergiaActual(2);
+            this.TXT_Vida_Máxima.text = inforPartida.Pakineitor.getNumeroMaximoVidas().ToString();
+            this.TXT_Vida_Actual.text = inforPartida.Pakineitor.getEnergiaActual().ToString();
         }
     
         
         if(inforPartida.Pakineitor.getDificil()  == true)
         {
-            this.energiaActual = 1;
-            this.TXT_Vida_Máxima.text = this.energiaActual.ToString();
+            inforPartida.Pakineitor.setNumeroMaximoVidas(1);
+            inforPartida.Pakineitor.setEnergiaActual(1);
+            this.TXT_Vida_Máxima.text = inforPartida.Pakineitor.getNumeroMaximoVidas().ToString();
             this.TXT_Vida_Actual.text = this.energiaActual.ToString();
             this.velx = 15f;
 
@@ -616,13 +629,12 @@ public class MovimientosPersonaje : MonoBehaviour
     void Start()
     {
 
-        ComprobarDificultad();                                                                                                     //--------Actualizo la variable de la energía actual para que me vuelva a dar 4 toques.
+        ComprobarDificultad();                                                                                                   //--------Actualizo la variable de la energía actual para que me vuelva a dar 4 toques.
         animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
         mirilla.gameObject.SetActive(false);
         if(isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
         cargadorPistola = capacidadCargador;                                                                                     //--------Inicializo a 120 el cargador.
-
         if (inforPartida.Pakineitor.getPartidaGuardada() == true) CargarPartida();                                               //--------Comprobamos si hemos guardado una sola vez la partida para cargarla.
 
     }
