@@ -37,6 +37,7 @@ public class MovimientosPersonaje : MonoBehaviour
     public GameObject      BonusBotiquin;
     public GameObject      InterfazZombiesMatados;
 
+
     public bool            isSuelo;                                                                     //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                                    //--------Variable para ver si ha cogido o no el arma.
     bool                   isRecargado              = true;                                             //--------Si está recargado el cargador al máximo de su capacidad. Por defecto es que sí.
@@ -621,6 +622,8 @@ public class MovimientosPersonaje : MonoBehaviour
 
     }
 
+
+
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -636,8 +639,8 @@ public class MovimientosPersonaje : MonoBehaviour
         if(isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
         cargadorPistola = capacidadCargador;                                                                                     //--------Inicializo a 120 el cargador.
         if (inforPartida.Pakineitor.getPartidaGuardada() == true) CargarPartida();                                               //--------Comprobamos si hemos guardado una sola vez la partida para cargarla.
-
-    }
+      
+    } 
 
     // Update is called once per frame
     void Update()
