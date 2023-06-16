@@ -27,8 +27,8 @@ public class MovimientosPersonaje : MonoBehaviour
     public Transform       refCanionPistola;
 
     RaycastHit2D           impacto;
-   
 
+    public GameObject      Manager;
     public GameObject      particulasDisparo;
     public GameObject      particulasSangre;
     public GameObject      particulasSangrePakineitor;
@@ -639,7 +639,11 @@ public class MovimientosPersonaje : MonoBehaviour
         if(isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
         cargadorPistola = capacidadCargador;                                                                                     //--------Inicializo a 120 el cargador.
         if (inforPartida.Pakineitor.getPartidaGuardada() == true) CargarPartida();                                               //--------Comprobamos si hemos guardado una sola vez la partida para cargarla.
-      
+        if (Sonidos.getSonidoNivel1() == false) {
+            Manager.GetComponent<ScreenPause>().Musica.GetComponent<AudioSource>().Stop();
+            Manager.GetComponent<ScreenPause>().bt_desMutear.gameObject.SetActive(true);
+            Manager.GetComponent<ScreenPause>().bt_mutear.gameObject.SetActive(false);   
+        }
     } 
 
     // Update is called once per frame

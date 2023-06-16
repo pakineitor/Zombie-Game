@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class screenManager : MonoBehaviour
 {
-
+                                                                                        //MENÚ PRINCIPAL.
     public GameObject  MenuPrincipal;
     public GameObject  PantallaAjustes;
     public GameObject  PantallaValoracion;
@@ -102,10 +102,7 @@ public class screenManager : MonoBehaviour
         Sonidos.setSonidoNivel1(false);
         Sonidos.setSonidoMenuPrincipal(false);
 
-        if (Sonidos.getMutearSonidos() == false) Musica.GetComponent<AudioSource>().Stop();
-        if (Sonidos.getMutearSonidos() == false) Click.GetComponent<AudioSource>().Play();
-
-
+        if (Sonidos.getSonidoMenuPrincipal() == false) Musica.GetComponent<AudioSource>().Stop();
     }
 
     public void ActivarValoracion()
@@ -147,7 +144,23 @@ public class screenManager : MonoBehaviour
     }
 
     
-    
+    public void ComprobarEstadoActualSonido()
+    {
+        if (Sonidos.getMutearSonidos() == false) Click.GetComponent<AudioSource>().Play();
+        if (Sonidos.getMutearSonidos() == true) Click.GetComponent<AudioSource>().Stop();
+        if (Sonidos.getSonidoMenuPrincipal() == true)
+        {
+            Musica.GetComponent<AudioSource>().Play();
+            SonidoOff.gameObject.SetActive(true);
+            SonidoOn.gameObject.SetActive(false);
+        }
+        if (Sonidos.getSonidoMenuPrincipal() == false)
+        {
+            Musica.GetComponent<AudioSource>().Stop();
+            SonidoOff.gameObject.SetActive(false);
+            SonidoOn.gameObject.SetActive(true);
+        }
+    }
 
 
     public void EnviarValoracion()
@@ -179,8 +192,7 @@ public class screenManager : MonoBehaviour
 
     private void Start()
     {
-        if(Sonidos.getMutearSonidos()==true) Click.GetComponent<AudioSource>().Stop();
-        if (Sonidos.getMutearSonidos() == false) Click.GetComponent<AudioSource>().Play();
+        ComprobarEstadoActualSonido();
     }
 }
 
