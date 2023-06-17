@@ -3,8 +3,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-
+using UnityEngine.UI;
 
 public class MovimientosPersonaje : MonoBehaviour
 {
@@ -36,7 +35,7 @@ public class MovimientosPersonaje : MonoBehaviour
     public GameObject      MunicionInterfaz;
     public GameObject      BonusBotiquin;
     public GameObject      InterfazZombiesMatados;
-
+ 
 
     public bool            isSuelo;                                                                     //--------Objeto que se va a referenciar al transform del arma.
     bool                   isArmado;                                                                    //--------Variable para ver si ha cogido o no el arma.
@@ -55,19 +54,21 @@ public class MovimientosPersonaje : MonoBehaviour
     int                    municionReserva          = 120;                                              //--------Representa las balas que tiene guardadas para recargar.
     int                    capacidadCargador        = 20;                                               //--------Representa los disparos que va a poder realizar.
     int                    numeroZombiesMatados     = 0;
-    int                    contadorDeMuertes        = 0;
+    int                    contadorDeMuertes        = inforPartida.Pakineitor.getNumeroMaximoVidas();
     int                    hermanoContadorDeMuertes = 0;                                                //--------Variable que va a compararse con contadorDeMuertes.
     
 
-    public UnityEngine.UI.Image mascaraDaño;
+  
     public TMPro.TextMeshProUGUI TXT_Vida_Actual; 
     public TMPro.TextMeshProUGUI TXT_Vida_Máxima;
     public TMPro.TextMeshProUGUI TXT_CargadorPistola;                                                   //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
     public TMPro.TextMeshProUGUI TXT_MunicionReserva;                                                   //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
     public TMPro.TextMeshProUGUI TXT_ZombiesMatados;
-
-    public UnityEngine.UI.Image BarraVerde;
-    public UnityEngine.UI.Image telaNegra;
+    
+    public Image mascaraDaño;
+    public Image BarraVerde;
+    public Image telaNegra;
+  
     float ValorDeseadoPantallaNegra             = 1f;
 
 
@@ -85,9 +86,9 @@ public class MovimientosPersonaje : MonoBehaviour
     /// <summary>
     /// Método que sumará uno a la variable contadora de muertes.
     /// </summary>
-    void AutoIncrementarContadorMuertes()
+    void AutoRestarContadorMuertes()
     {
-        contadorDeMuertes++;
+        contadorDeMuertes--;
       
     }
 
@@ -420,51 +421,52 @@ public class MovimientosPersonaje : MonoBehaviour
 
         Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
         
-        if (this.numeroMaximoVidas >= 0)  //Condición para comprobar si quedan oportunidades, es decir, que vida máxima no sea 0.
-        {
+        
             if (energiaActual == 0)
             {
-                numeroMaximoVidas--;
+                numeroMaximoVidas--;  //Restamos 1 al número máximo de vidas.
                 BarraVerde.fillAmount = 0.0f;
                 animacion.SetTrigger("Muere");
                 isMuerto = true;
-                AutoIncrementarContadorMuertes();
-                this.energiaActual = inforPartida.Pakineitor.getEnergiaActual();
+                
+
+            this.energiaActual = inforPartida.Pakineitor.getEnergiaActual();
             }
-            else
+            
+            if(energiaActual > 0)
             {
 
 
                 if (energiaActual == 3)
                 {
                     transparencia = 74;
+                    mascaraDaño.color = new Color(255, 0, 0, transparencia);
                     BarraVerde.fillAmount = 0.856f;
                 }
 
                 if (energiaActual == 2)
                 {
                     transparencia = 134f;
+                    mascaraDaño.color = new Color(255, 0, 0, transparencia);
                     BarraVerde.fillAmount = 0.355f;
                 }
 
                 if (energiaActual == 1)
                 {
                     transparencia = 255f;
+                    mascaraDaño.color = new Color(255, 0, 0, transparencia);
                     BarraVerde.fillAmount = 0.036f;
                 }
 
                 TXT_Vida_Actual.text = energiaActual.ToString();
 
                 Debug.Log("Energía actual: " + energiaActual);
-                mascaraDaño.color = new Color(1, 1, 1, transparencia);
+                
 
             }
-        } 
+        
 
-        if(inforPartida.Pakineitor.getNumeroMaximoVidas() == 0)
-        {
-            //muestras el game over.
-        }
+        
     }
 
                                                                                                                                     /// <summary>
@@ -494,6 +496,7 @@ public class MovimientosPersonaje : MonoBehaviour
             this.numeroMaximoVidas      = inforPartida.Pakineitor.getNumeroMaximoVidas();
             this.energiaActual          = inforPartida.Pakineitor.getEnergiaActual();
             telaNegra.color             = new Color(0, 0, 0, ValorAlpha);
+            mascaraDaño.color = new Color(1,1,1, ValorAlpha);
             if (ValorAlpha > 0.9f && ValorDeseadoPantallaNegra == 1) SceneManager.LoadScene("Nivel1");
             
         }
@@ -512,6 +515,7 @@ public class MovimientosPersonaje : MonoBehaviour
             inforPartida.Pakineitor.setNumeroMaximoVidas(numeroMaximoVidas);
             inforPartida.Pakineitor.setEnergiaActual(inforPartida.Pakineitor.getEnergiaActual()); //Reinicio la variable.
             this.TXT_Vida_Máxima.text = inforPartida.Pakineitor.getNumeroMaximoVidas().ToString();
+            Manager.GetComponent<ScreenPause>().ComprobarVidaMaxima(inforPartida.Pakineitor.getNumeroMaximoVidas());
             setHermanoContadorDeMuertes(getContadorDeMuertes()); //Actualizo la variable para así inidcarle al programa si muere o no el personaje comparando las variables de la condición.
         }
     }
@@ -619,10 +623,10 @@ public class MovimientosPersonaje : MonoBehaviour
 
         }
 
-
+       
     }
 
-
+    
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -732,7 +736,13 @@ public class MovimientosPersonaje : MonoBehaviour
         isMuerto = false;
         TXT_ZombiesMatados.text = numeroZombiesMatados.ToString();
 
+        if(numeroMaximoVidas == 0)
+        {
+            
+        }
+
     }
 
+   
 
 }

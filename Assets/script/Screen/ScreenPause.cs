@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,6 +12,11 @@ public class ScreenPause : MonoBehaviour
     public GameObject bt_desMutear;
     public GameObject Click;
     public GameObject Musica;
+    public GameObject PantallaMuerte;
+
+    /// <summary>
+    /// Método que va a congelar/ pausar la partida.
+    /// </summary>
     public void Pausar()
     {
         if (Sonidos.getSonidoNivel1() == true) Musica.GetComponent<AudioSource>().Stop();
@@ -21,6 +27,9 @@ public class ScreenPause : MonoBehaviour
         Pakineitor.GetComponent<MovimientosPersonaje>().setIsDisparar(false);
     }
 
+    /// <summary>
+    /// Método que volverá a reanudar la partida si está pausada.
+    /// </summary>
    public void ReanudarPartida()
     {
         if(Sonidos.getSonidoNivel1()==true) Musica.GetComponent<AudioSource>().Play();
@@ -45,6 +54,10 @@ public class ScreenPause : MonoBehaviour
 
     }
 
+
+    /// <summary>
+    /// Método que se va a encargar de mostrar la pantalla controles.
+    /// </summary>
     public void Controloes()
     {
         if (Sonidos.getMutearSonidos() == false) Click.GetComponent<AudioSource>().Play();
@@ -52,12 +65,19 @@ public class ScreenPause : MonoBehaviour
    
     }
 
+    /// <summary>
+    /// Método que va a volver al menú de pausa desde la pantalla controles.
+    /// </summary>
     public void VolverMenuPausa()
     {
         if (Sonidos.getMutearSonidos() == false) Click.GetComponent<AudioSource>().Play();
         PantallaControles.SetActive(false);
     }
 
+
+    /// <summary>
+    /// Método que va a encargarse de gestionar todos los sonidos del juego y música.
+    /// </summary>
     public void MutearSonido()
     {
         
@@ -74,6 +94,9 @@ public class ScreenPause : MonoBehaviour
       
     }
 
+    /// <summary>
+    /// Método que va a encargarse de gestionar todos los sonidos del juego y música.
+    /// </summary>
     public void DesmutearSonido()
     {
         //Activar sonido
@@ -87,4 +110,24 @@ public class ScreenPause : MonoBehaviour
         if (Sonidos.getMutearSonidos() == false) Click.GetComponent<AudioSource>().Play();
         if (Sonidos.getSonidoNivel1() == true) Musica.GetComponent<AudioSource>().Play();
     }
+
+    /// <summary>
+    /// Método que va a permitir empezar una nueva partida desde el game over.
+    /// </summary>
+    /// <param name="nombreEscena"></param>
+    public void NuevaPartida(string nombreEscena)
+    {
+        SceneManager.LoadScene(nombreEscena);
+    }
+
+    public void ComprobarVidaMaxima(int vidaMaxima)
+    {
+        if(vidaMaxima == 0)
+        {
+            PantallaMuerte.gameObject.SetActive(true);
+            Time.timeScale = 0f;
+            MutearSonido();
+        }
+    }
+
 }

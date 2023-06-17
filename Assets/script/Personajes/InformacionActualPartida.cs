@@ -16,7 +16,7 @@ public static class inforPartida
                static int    municionReserva;
                static int    contadorMuertes;
                static int    numeroZombiesMatados;
-               static int    numeroMaximoVidas                  = 4;
+               static int    numeroMaximoVidas                  = 4; //Default.
         
 
                static bool   Armado;
