@@ -13,6 +13,7 @@ public class ScreenPause : MonoBehaviour
     public GameObject Click;
     public GameObject Musica;
     public GameObject PantallaMuerte;
+    public GameObject MusicaGameOver;
 
     /// <summary>
     /// Método que va a congelar/ pausar la partida.
@@ -47,6 +48,7 @@ public class ScreenPause : MonoBehaviour
     public void Salir(string NombreEscena)
     {
         if (Sonidos.getMutearSonidos() == false) Click.GetComponent<AudioSource>().Play();
+        Sonidos.setMusicaGameOver(false);
         
         SceneManager.LoadScene(NombreEscena);
         Time.timeScale = 1;
@@ -118,6 +120,8 @@ public class ScreenPause : MonoBehaviour
     public void NuevaPartida(string nombreEscena)
     {
         SceneManager.LoadScene(nombreEscena);
+        Sonidos.setMusicaGameOver(false);
+        Time.timeScale = 1f;
     }
 
     public void ComprobarVidaMaxima(int vidaMaxima)
@@ -127,6 +131,7 @@ public class ScreenPause : MonoBehaviour
             PantallaMuerte.gameObject.SetActive(true);
             Time.timeScale = 0f;
             MutearSonido();
+            Sonidos.setMusicaGameOver(false);
         }
     }
 

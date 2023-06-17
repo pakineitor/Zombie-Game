@@ -10,6 +10,13 @@ public static class Sonidos
    
    static bool MutearSonidos        = false;
    static bool DesmutearSonidos     = false;
+   static bool GameOver             = false;
+
+
+    public static void setMusicaGameOver(bool yes)
+    {
+        GameOver = yes;
+    }
 
     public static void setMutearSonidos(bool yes)
     {
@@ -52,7 +59,10 @@ public static class Sonidos
         return DesmutearSonidos;
     }
 
-
+    public static bool getSonidoGameOver()
+    {
+        return GameOver;
+    }
 
     public static void DesactivarTodosSonidos()
     {

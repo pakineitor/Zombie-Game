@@ -421,19 +421,8 @@ public class MovimientosPersonaje : MonoBehaviour
 
         Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
         
-        
-            if (energiaActual == 0)
-            {
-                numeroMaximoVidas--;  //Restamos 1 al número máximo de vidas.
-                BarraVerde.fillAmount = 0.0f;
-                animacion.SetTrigger("Muere");
-                isMuerto = true;
-                
 
-            this.energiaActual = inforPartida.Pakineitor.getEnergiaActual();
-            }
-            
-            if(energiaActual > 0)
+            if(energiaActual >= 0)
             {
 
 
@@ -458,9 +447,33 @@ public class MovimientosPersonaje : MonoBehaviour
                     BarraVerde.fillAmount = 0.036f;
                 }
 
+
+                if(energiaActual == 0 && numeroMaximoVidas>0)
+            {
+                BarraVerde.fillAmount = 0.0f;
+                numeroMaximoVidas--;  //Restamos 1 al número máximo de vidas.
+                this.TXT_Vida_Máxima.text = this.numeroMaximoVidas.ToString();
+                this.energiaActual = inforPartida.Pakineitor.getEnergiaActual();  //Reinicio energía actual de nuevo
+                isMuerto = true;
+                animacion.SetTrigger("Muere");
+
+            }
+
+
+                if(energiaActual == 0 && numeroMaximoVidas == 0)
+            {
+                Sonidos.setMusicaGameOver(true);
+                Manager.GetComponent<ScreenPause>().Musica.GetComponent<AudioSource>().Stop();
+                Manager.GetComponent<ScreenPause>().PantallaMuerte.gameObject.SetActive(true);
+                if (Sonidos.getSonidoGameOver() == true) Manager.GetComponent<ScreenPause>().MusicaGameOver.GetComponent<AudioSource>().Play();
+                Time.timeScale = 0f;
+                
+            }
+
                 TXT_Vida_Actual.text = energiaActual.ToString();
 
                 Debug.Log("Energía actual: " + energiaActual);
+                
                 
 
             }
@@ -498,9 +511,9 @@ public class MovimientosPersonaje : MonoBehaviour
             telaNegra.color             = new Color(0, 0, 0, ValorAlpha);
             mascaraDaño.color = new Color(1,1,1, ValorAlpha);
             if (ValorAlpha > 0.9f && ValorDeseadoPantallaNegra == 1) SceneManager.LoadScene("Nivel1");
-            
+            isMuerto = false;
         }
-       
+        if (isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
     }
 
                                                                                                                                     /// <summary>
@@ -512,9 +525,8 @@ public class MovimientosPersonaje : MonoBehaviour
         if (getContadorDeMuertes() != getHermanoContadorDeMuertes()) //Condición que comprueba si el personaje ha muerto una vez o no para actualizar la variable hermanoContadorDeMuertes para saber si quito una vida o no.
         {
             Debug.Log("Entro al if de ActualizarNumeroVidas");
-            inforPartida.Pakineitor.setNumeroMaximoVidas(numeroMaximoVidas);
-            inforPartida.Pakineitor.setEnergiaActual(inforPartida.Pakineitor.getEnergiaActual()); //Reinicio la variable.
-            this.TXT_Vida_Máxima.text = inforPartida.Pakineitor.getNumeroMaximoVidas().ToString();
+            inforPartida.Pakineitor.setNumeroMaximoVidas(numeroMaximoVidas); //Actualizo la variable en a clase estátca.
+            inforPartida.Pakineitor.setEnergiaActual(inforPartida.Pakineitor.getEnergiaActual()); //Reinicio la variable
             Manager.GetComponent<ScreenPause>().ComprobarVidaMaxima(inforPartida.Pakineitor.getNumeroMaximoVidas());
             setHermanoContadorDeMuertes(getContadorDeMuertes()); //Actualizo la variable para así inidcarle al programa si muere o no el personaje comparando las variables de la condición.
         }
@@ -540,19 +552,7 @@ public class MovimientosPersonaje : MonoBehaviour
         inforPartida.Pakineitor.mascaraDaño     = this.mascaraDaño;
         inforPartida.Pakineitor.BarraVerde      = this.BarraVerde;
         
-        
-        
-        inforPartida.infoPaqueteCorazones.Clear();                                                          //Limpiamos la lista para que no siga aumentando cada vez que guarde la partida.
-        Transform todosLosPaquetes              = GameObject.Find("Corazones").transform;                   //Referenciamos el objeto de escena llamado Corazones para poder acceder a sus hijos que son los corazones
-                                                                                                    // Por cada item comparamos si ese objeto está activado o no.
-        foreach (Transform paquete in todosLosPaquetes)
-        {
-            inforPartida.TipoInfoCorazones itempaqueteCorazon = new inforPartida.TipoInfoCorazones();
-            itempaqueteCorazon.Activado = paquete.gameObject.activeSelf;
-            inforPartida.infoPaqueteCorazones.Add(itempaqueteCorazon);
-        }
-            
-        
+  
 
     }
 
@@ -635,7 +635,7 @@ public class MovimientosPersonaje : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        if(Sonidos.getSonidoGameOver()==false) Manager.GetComponent<ScreenPause>().MusicaGameOver.GetComponent<AudioSource>().Stop();
         ComprobarDificultad();                                                                                                   //--------Actualizo la variable de la energía actual para que me vuelva a dar 4 toques.
         animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
@@ -648,11 +648,13 @@ public class MovimientosPersonaje : MonoBehaviour
             Manager.GetComponent<ScreenPause>().bt_desMutear.gameObject.SetActive(true);
             Manager.GetComponent<ScreenPause>().bt_mutear.gameObject.SetActive(false);   
         }
+        
     } 
 
     // Update is called once per frame
     void Update()
     {
+
         ActualizarNumeroVidas();
         rigidbody2.velocity               = new Vector2(velx * movX, rigidbody2.velocity.y);                                     //--------Referenciamos el componente Rigidbody2d con un vector que contiene una velocidad por un movimiento en el eje x y una coordenadas en el eje y.
         movX                              = Input.GetAxis("Horizontal");                                                         //--------Extraemos el axis horizontal para el movimiento en el eje x con -1 o 1. 
