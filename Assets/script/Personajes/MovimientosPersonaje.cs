@@ -8,14 +8,16 @@ using UnityEngine.UI;
 public class MovimientosPersonaje : MonoBehaviour
 {
 
-    Animator               animacion;
-    Rigidbody2D            rigidbody2;                                                                  //--------Vamos a referenciarle el Rigibody para que apunte al aplicado al personaje desde el editor. De esta manera podremos aplicarle las fuerzas necesarias para hacer real un salto.
-    
+    Rigidbody2D rigidbody2;                                                                  //--------Vamos a referenciarle el Rigibody para que apunte al aplicado al personaje desde el editor. De esta manera podremos aplicarle las fuerzas necesarias para hacer real un salto.
+
+
+    public Animator        animacion;
     public float           fuerzaSalto;
     public float           velx;
     public float           movX;
     public float           retroceso             = 400f;
     public float           impactoAZombie        = 900f;
+    float                  ValorAlphaTelaNegra   = 1f;
     
     public Transform       refPie;
     public Transform       ContenedorArma;
@@ -42,9 +44,8 @@ public class MovimientosPersonaje : MonoBehaviour
     bool                   isRecargado              = true;                                             //--------Si está recargado el cargador al máximo de su capacidad. Por defecto es que sí.
     bool                   isDisparar               = true;                                             //--------Si puedo disparar o no.
     bool                   isBonusMunicionCogido    = false;                            
-    bool                   isMuerto                 = false;
     bool                   isBonusBotiquinCogido    = false;
-    
+
 
 
 
@@ -65,18 +66,21 @@ public class MovimientosPersonaje : MonoBehaviour
     public TMPro.TextMeshProUGUI TXT_MunicionReserva;                                                   //--------Definimos la variable de tipo TextMesh para manipularla en la scena.
     public TMPro.TextMeshProUGUI TXT_ZombiesMatados;
     
-    public Image mascaraDaño;
+    
     public Image BarraVerde;
     public Image telaNegra;
   
-    float ValorDeseadoPantallaNegra             = 1f;
+   
 
 
     //---------------------------------------------------------------------------- INICIO SETs -----------------------------------------------------------------------------------------------------------
 
 
 
-
+    /// <summary>
+    /// Método que va a cambiar la variable mencionada pasándole por parámetro un int.
+    /// </summary>
+    /// <param name="numero"></param>
     public void setHermanoContadorDeMuertes(int numero)  
     {
         hermanoContadorDeMuertes=numero;
@@ -361,6 +365,7 @@ public class MovimientosPersonaje : MonoBehaviour
             if (impacto.collider.gameObject.CompareTag("Cabeza"))
             {
                 numeroZombiesMatados++;
+                inforPartida.Pakineitor.setNumeroZombiesMatados(numeroZombiesMatados);      //Actualizo la variable en la clase estática.
                 Instantiate(particulasSangre, impacto.point, Quaternion.identity);
                 impacto.transform.GetComponent<Zombies>().ZombieMuere();
             }
@@ -417,65 +422,42 @@ public class MovimientosPersonaje : MonoBehaviour
     public void RecibirDaño(Vector2 posicion)
     {
         energiaActual--;
-        float transparencia                =0f;
-
         Instantiate(particulasSangrePakineitor, posicion, Quaternion.identity);
-        
-
             if(energiaActual >= 0)
-            {
+            {    
+                if (energiaActual == 3) BarraVerde.fillAmount = 0.856f;
+                if (energiaActual == 2) BarraVerde.fillAmount = 0.355f;
+                if (energiaActual == 1) BarraVerde.fillAmount = 0.036f;
 
-
-                if (energiaActual == 3)
+                if(energiaActual <= 0 && numeroMaximoVidas>0) //Si me quedan oportunidades, reaparezco.
                 {
-                    transparencia = 74;
-                    mascaraDaño.color = new Color(255, 0, 0, transparencia);
-                    BarraVerde.fillAmount = 0.856f;
-                }
-
-                if (energiaActual == 2)
-                {
-                    transparencia = 134f;
-                    mascaraDaño.color = new Color(255, 0, 0, transparencia);
-                    BarraVerde.fillAmount = 0.355f;
-                }
-
-                if (energiaActual == 1)
-                {
-                    transparencia = 255f;
-                    mascaraDaño.color = new Color(255, 0, 0, transparencia);
-                    BarraVerde.fillAmount = 0.036f;
-                }
-
-
-                if(energiaActual == 0 && numeroMaximoVidas>0)
-            {
-                BarraVerde.fillAmount = 0.0f;
-                numeroMaximoVidas--;  //Restamos 1 al número máximo de vidas.
-                this.TXT_Vida_Máxima.text = this.numeroMaximoVidas.ToString();
-                this.energiaActual = inforPartida.Pakineitor.getEnergiaActual();  //Reinicio energía actual de nuevo
-                isMuerto = true;
-                animacion.SetTrigger("Muere");
+                    animacion.SetTrigger("Muere");
+                    BarraVerde.fillAmount = 0.0f;
+                    numeroMaximoVidas--;  //Restamos 1 al número máximo de vidas
+                    inforPartida.Pakineitor.setIsMuerto(true);
+                    Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAH");
 
             }
 
 
-                if(energiaActual == 0 && numeroMaximoVidas == 0)
-            {
-                Sonidos.setMusicaGameOver(true);
-                Manager.GetComponent<ScreenPause>().Musica.GetComponent<AudioSource>().Stop();
-                Manager.GetComponent<ScreenPause>().PantallaMuerte.gameObject.SetActive(true);
-                if (Sonidos.getSonidoGameOver() == true) Manager.GetComponent<ScreenPause>().MusicaGameOver.GetComponent<AudioSource>().Play();
-                Time.timeScale = 0f;
+                if(energiaActual == 0 && numeroMaximoVidas == 0) //Se ejecuta el game Over.
+                {
+                   
+                    Sonidos.setMusicaGameOver(true);
+                    Manager.GetComponent<ScreenPause>().Musica.GetComponent<AudioSource>().Stop();
+                    Manager.GetComponent<ScreenPause>().PantallaMuerte.gameObject.SetActive(true);
+                    if (Sonidos.getSonidoGameOver() == true) Manager.GetComponent<ScreenPause>().MusicaGameOver.GetComponent<AudioSource>().Play();
+                    Time.timeScale = 0f;
                 
-            }
+                }
+            
+                inforPartida.Pakineitor.setNumeroMaximoVidas(numeroMaximoVidas);
+                inforPartida.Pakineitor.setEnergiaActual(energiaActual);
 
-                TXT_Vida_Actual.text = energiaActual.ToString();
-
+                TXT_Vida_Máxima.text = inforPartida.Pakineitor.getNumeroMaximoVidas().ToString();
+                TXT_Vida_Actual.text = inforPartida.Pakineitor.getEnergiaActual().ToString();
                 Debug.Log("Energía actual: " + energiaActual);
                 
-                
-
             }
         
 
@@ -487,33 +469,15 @@ public class MovimientosPersonaje : MonoBehaviour
                                                                                                                                     /// </summary>
   public void FadeOut()
     {
-        
-        ValorDeseadoPantallaNegra = 1;
-
+        ValorAlphaTelaNegra = 1;
     }
-
-    /// <summary>
-    /// Método que pone la pantalla negra transparente.
-    /// </summary>
-    public void FadeIn()
-    {
-        ValorDeseadoPantallaNegra        = 0;
-    }
-
 
     private void FixedUpdate()
     {
-        float ValorAlpha                 = Mathf.Lerp(telaNegra.color.a, ValorDeseadoPantallaNegra, 0.1f);
-        if(energiaActual == 0)
-        {
-            this.numeroMaximoVidas      = inforPartida.Pakineitor.getNumeroMaximoVidas();
-            this.energiaActual          = inforPartida.Pakineitor.getEnergiaActual();
-            telaNegra.color             = new Color(0, 0, 0, ValorAlpha);
-            mascaraDaño.color = new Color(1,1,1, ValorAlpha);
-            if (ValorAlpha > 0.9f && ValorDeseadoPantallaNegra == 1) SceneManager.LoadScene("Nivel1");
-            isMuerto = false;
-        }
-        if (isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
+        float ValorAlpha                 = Mathf.Lerp(telaNegra.color.a, ValorAlphaTelaNegra, 0.05f);                               //Valor entre valor inicial al final, es decir, va a ir avanazando paso a paso del principio al final.
+        telaNegra.color                  = new Color(0, 0, 0, ValorAlpha);
+        if (ValorAlpha > 0.9 && ValorAlphaTelaNegra ==1) SceneManager.LoadScene("Nivel1");
+        
     }
 
                                                                                                                                     /// <summary>
@@ -532,14 +496,17 @@ public class MovimientosPersonaje : MonoBehaviour
         }
     }
 
+    
 
     /// <summary>
     /// Método que gracias a una clase estática va a guardar la información actual de la partida.
     /// </summary>
     public void GuardarPartida()
     {
+        
+
         inforPartida.Pakineitor.setPartidaGuardada(true);
-        inforPartida.Pakineitor.setMunicionCargador(this.cargadorPistola);
+        inforPartida.Pakineitor.setMunicionCargador(this.cargadorPistola); 
         inforPartida.Pakineitor.setMunicionReserva(this.municionReserva);
         inforPartida.Pakineitor.setEnergiaActual(this.energiaActual);
         inforPartida.Pakineitor.setContadorMuertes(getContadorDeMuertes());
@@ -549,8 +516,7 @@ public class MovimientosPersonaje : MonoBehaviour
         inforPartida.Pakineitor.setCargado(getRecargado());
         inforPartida.Pakineitor.setNumeroZombiesMatados(getNumeroZombiesMatados());
         inforPartida.Pakineitor.posicion        = transform.position;                                       //ñññ pendiente de hacer los set y get que faltan.
-        inforPartida.Pakineitor.mascaraDaño     = this.mascaraDaño;
-        inforPartida.Pakineitor.BarraVerde      = this.BarraVerde;
+        inforPartida.Pakineitor.BarraVerde      = BarraVerde;
         
   
 
@@ -561,34 +527,20 @@ public class MovimientosPersonaje : MonoBehaviour
     /// </summary>
     public void CargarPartida()
     {
-        transform.position                  = inforPartida.Pakineitor.posicion;
-        contadorDeMuertes                   = inforPartida.Pakineitor.getContadorMuertes();
-        cargadorPistola                     = inforPartida.Pakineitor.getMunicionCargador();
-        municionReserva                     = inforPartida.Pakineitor.getMunicionReserva();
-        energiaActual                       = inforPartida.Pakineitor.getEnergiaActual();
-        isArmado                            = inforPartida.Pakineitor.getIsArmado();
-        numeroZombiesMatados                = inforPartida.Pakineitor.getNumeroZombiesMatados();
-        mascaraDaño                         = inforPartida.Pakineitor.mascaraDaño;
-        BarraVerde                          = inforPartida.Pakineitor.BarraVerde;
-        contadorDeMuertes                   = inforPartida.Pakineitor.getContadorMuertes();
+        transform.position                  = inforPartida.Pakineitor.posicion;                             //--------Guardar la posición del personaje.
+        contadorDeMuertes                   = inforPartida.Pakineitor.getContadorMuertes();                 //--------Guardar el contador de muertes.
+        cargadorPistola                     = inforPartida.Pakineitor.getMunicionCargador();                //--------Guardar el cargador de la pistola.
+        municionReserva                     = inforPartida.Pakineitor.getMunicionReserva();                 //--------Guardar el estado de la munición máxima.
+        energiaActual                       = inforPartida.Pakineitor.getEnergiaActual();                   //--------Guardar la energía actual.
+        isArmado                            = inforPartida.Pakineitor.getIsArmado();                        //--------Guardar si está armado o no.
+        numeroZombiesMatados                = inforPartida.Pakineitor.getNumeroZombiesMatados();            //--------Guardar el número de zombies matados.
+        BarraVerde                          = inforPartida.Pakineitor.BarraVerde;                           //Guardar el estado de la barra verde.
+        contadorDeMuertes                   = inforPartida.Pakineitor.getContadorMuertes();                 //Guardar las veces que has muerto.
 
     
         setBonusBotiquinCogido(inforPartida.Pakineitor.getIsBonusBotiquinCogido());
         setIsBonusMunicionCogido(inforPartida.Pakineitor.getIsBonusMunicionMaximaCogido());
         setCargado(inforPartida.Pakineitor.getCargado());
-
-        //Cargar el estado del vector:
-        Transform todosLosPaquetes = GameObject.Find("Corazones").transform;
-        int i = 0;
-        foreach (Transform paquete in todosLosPaquetes)
-        {
-            inforPartida.TipoInfoCorazones itempaqueteCorazon = new inforPartida.TipoInfoCorazones();
-            paquete.gameObject.SetActive(inforPartida.infoPaqueteCorazones[i].Activado);
-            inforPartida.infoPaqueteCorazones.Add(itempaqueteCorazon);
-            i++;
-        }
-
-
 
     }
 
@@ -635,18 +587,33 @@ public class MovimientosPersonaje : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         if(Sonidos.getSonidoGameOver()==false) Manager.GetComponent<ScreenPause>().MusicaGameOver.GetComponent<AudioSource>().Stop();
         ComprobarDificultad();                                                                                                   //--------Actualizo la variable de la energía actual para que me vuelva a dar 4 toques.
         animacion                         = GetComponent<Animator>();                                                            //--------Agregamos una referencia al animator
         rigidbody2                        = GetComponent<Rigidbody2D>();                                                         //--------Aquí referenciamos el componente externo con la variable de tipo RigiBody2d.
         mirilla.gameObject.SetActive(false);
-        if(isMuerto == true) telaNegra.color = new Color(0, 0, 0, 1);
+        
         cargadorPistola = capacidadCargador;                                                                                     //--------Inicializo a 120 el cargador.
+        
+        if (Input.GetKeyDown(KeyCode.C)) inforPartida.Pakineitor.setPartidaGuardada(true); //Si guardo manual cambio la variable a true para cuando se recargue la escena que carge la partida.
         if (inforPartida.Pakineitor.getPartidaGuardada() == true) CargarPartida();                                               //--------Comprobamos si hemos guardado una sola vez la partida para cargarla.
         if (Sonidos.getSonidoNivel1() == false) {
             Manager.GetComponent<ScreenPause>().Musica.GetComponent<AudioSource>().Stop();
             Manager.GetComponent<ScreenPause>().bt_desMutear.gameObject.SetActive(true);
             Manager.GetComponent<ScreenPause>().bt_mutear.gameObject.SetActive(false);   
+        }
+
+        telaNegra.color = new Color(0,0,0,1);
+        ValorAlphaTelaNegra = 0f;
+
+        if(inforPartida.Pakineitor.getIsMuerto() == true)
+        {
+            inforPartida.Pakineitor.setIsMuerto(false);
+            this.energiaActual = inforPartida.Pakineitor.getEnergiaActual(); //Reinicio la variable.
+            this.numeroMaximoVidas = inforPartida.Pakineitor.getNumeroMaximoVidas(); //Actualizo la variable.
+            this.TXT_Vida_Máxima.text = inforPartida.Pakineitor.getNumeroMaximoVidas().ToString();
+            this.TXT_Vida_Actual.text = inforPartida.Pakineitor.getEnergiaActual().ToString();
         }
         
     } 
@@ -654,8 +621,9 @@ public class MovimientosPersonaje : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (energiaActual <= 0) return;
 
-        ActualizarNumeroVidas();
+        //ActualizarNumeroVidas();
         rigidbody2.velocity               = new Vector2(velx * movX, rigidbody2.velocity.y);                                     //--------Referenciamos el componente Rigidbody2d con un vector que contiene una velocidad por un movimiento en el eje x y una coordenadas en el eje y.
         movX                              = Input.GetAxis("Horizontal");                                                         //--------Extraemos el axis horizontal para el movimiento en el eje x con -1 o 1. 
         isSuelo                           = Physics2D.OverlapCircle(refPie.position, 1f, 1 << 8);                                //--------En esta sentencia de código, guardamos un bool comparando que si hay algo en el área formada por el radio de refPie, que sea true o false.
@@ -730,19 +698,12 @@ public class MovimientosPersonaje : MonoBehaviour
 
             if(isBonusBotiquinCogido == true)
             {
-                mascaraDaño.color = new Color(1, 1, 1, 0);
                 BarraVerde.fillAmount = 1f;
             }
         }
 
-        isMuerto = false;
-        TXT_ZombiesMatados.text = numeroZombiesMatados.ToString();
-
-        if(numeroMaximoVidas == 0)
-        {
-            
-        }
-
+        TXT_ZombiesMatados.text = inforPartida.Pakineitor.getNumeroZombiesMatados().ToString();
+        
     }
 
    

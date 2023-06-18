@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,8 +23,8 @@ public class screenManager : MonoBehaviour
     public Button      facil;
     public Button      media;
     public Button      dificil;
-   
 
+    
     private string     inputMensaje;
     //string password = "gfnrfccettcsdiwa", correo = "pakineitor123@gmail.com";
 
@@ -188,11 +189,15 @@ public class screenManager : MonoBehaviour
         
         Debug.Log("El mensaje: " + getMensaje() + "se ha enviado con éxitoa nuestros técnicos, Gracias por confiar en nosotros");
 
+
     }
+
 
     private void Start()
     {
         ComprobarEstadoActualSonido();
     }
+
+    
 }
 

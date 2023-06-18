@@ -17,8 +17,8 @@ public static class inforPartida
                static int    contadorMuertes;
                static int    numeroZombiesMatados;
                static int    numeroMaximoVidas                  = 4; //Default.
-        
 
+               static bool   isMuerto = false;
                static bool   Armado;
                static bool   BonusBotiquinCogido;
                static bool   BonusMunicionMaximaCogido;
@@ -27,7 +27,26 @@ public static class inforPartida
                static bool   facil                              = true; //Default.
                static bool   media                              = false;
                static bool   dificil                            = false;
-      
+               static string Nombre = "pakineitor";
+
+               static GameObject game;
+
+
+        public static void setIsMuerto(bool ismuerto)
+        {
+            isMuerto = ismuerto;
+        }
+
+        public static void setGame(GameObject Game)
+        {
+            game = Game;
+        }
+
+
+        public static void setNombre(string nombre)
+        {
+            Nombre = nombre;
+        }
 
         public static void setNumeroMaximoVidas(int n)
         {
@@ -171,16 +190,25 @@ public static class inforPartida
             return dificil;
         }
 
+        public static string getNombre()
+        {
+            return Nombre;
+        }
+
+        public static GameObject getGameObject()
+        {
+            return game;
+        }
+
+        public static bool getIsMuerto()
+        {
+            return isMuerto;
+        }
+
+
+
     }
 
 
-    /// <summary>
-    /// Clase para los corazones.
-    /// </summary>
-    public class TipoInfoCorazones
-    {
-        public bool Activado;
-    }
-
-    public static List<TipoInfoCorazones> infoPaqueteCorazones = new List<TipoInfoCorazones>();
+   
 }

@@ -54,6 +54,8 @@ public class ScreenPause : MonoBehaviour
         Time.timeScale = 1;
         PausaMenu.SetActive(false);
 
+        
+
     }
 
 
